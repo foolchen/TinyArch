@@ -1,1 +1,1 @@
-include ':app', ':tiny-architecture'
+include ':app', ':tiny-arch'
