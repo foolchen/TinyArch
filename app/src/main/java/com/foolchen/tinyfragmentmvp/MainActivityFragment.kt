@@ -21,6 +21,8 @@ class MainActivityFragment : BaseFragment() {
     btn_hidden.setOnClickListener {
       startFragment(HiddenChangedFragment::class.java.name)
     }
+
+    btn_vp.setOnClickListener { startFragment(ViewPagerFragment::class.java.name) }
   }
 
 

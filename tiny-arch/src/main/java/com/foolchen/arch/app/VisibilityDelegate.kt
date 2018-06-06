@@ -13,6 +13,7 @@ class VisibilityDelegate {
   private var isFirstVisible = true
   private var isSupportResumed = false
   private var isSupportVisible = false
+  private var isSupportInVisible = false
   private var mSavedInstanceState: Bundle? = null
 
   fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +38,10 @@ class VisibilityDelegate {
     if (isSupportResumed && f is ISupportLifecycle) {
       if (f.checkRecursiveVisible()) {
         onSupportVisible(f)
+        onChildSupportVisible(f)
       } else {
         onSupportInvisible(f)
+        onChildSupportInVisible(f)
       }
     }
   }
@@ -47,8 +50,10 @@ class VisibilityDelegate {
     if (isSupportResumed && f is ISupportLifecycle) {
       if (f.checkRecursiveVisible()) {
         onSupportVisible(f)
+        onChildSupportVisible(f)
       } else {
         onSupportInvisible(f)
+        onChildSupportInVisible(f)
       }
     }
   }
@@ -58,6 +63,8 @@ class VisibilityDelegate {
   fun isSupportVisible(f: Fragment) = isSupportResumed && isSupportVisible
 
   private fun onSupportVisible(f: ISupportLifecycle) {
+    if (isSupportVisible) return
+
     if (isFirstVisible) {
       f.onLazyInit(mSavedInstanceState)
       isFirstVisible = false
@@ -65,11 +72,31 @@ class VisibilityDelegate {
 
     f.onSupportVisible()
     isSupportVisible = true
+    isSupportInVisible = false
+  }
+
+  private fun onChildSupportVisible(f: ISupportLifecycle) {
+    // 然后对child fragments进行调用
+    (f as? Fragment)?.childFragmentManager?.fragments?.filter { it is ISupportLifecycle }?.forEach {
+      val delegate = (it as ISupportLifecycle).getSupportDelegate()
+      delegate.onSupportVisible(it)
+    }
   }
 
   private fun onSupportInvisible(f: ISupportLifecycle) {
+    if (isSupportInVisible) return
+
     f.onSupportInvisible()
     isSupportVisible = false
+    isSupportInVisible = true
+  }
+
+  private fun onChildSupportInVisible(f: ISupportLifecycle) {
+    // 然后对child fragments进行调用
+    (f as? Fragment)?.childFragmentManager?.fragments?.filter { it is ISupportLifecycle }?.forEach {
+      val delegate = (it as ISupportLifecycle).getSupportDelegate()
+      delegate.onSupportInvisible(it)
+    }
   }
 
   private fun Fragment?.checkVisible(): Boolean = this != null && !isHidden && userVisibleHint

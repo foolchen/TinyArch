@@ -27,6 +27,14 @@ abstract class ArchFragment : Fragment(), ISupportLifecycle {
     mDelegate.onPause(this)
   }
 
+  override fun onDestroyView() {
+    super.onDestroyView()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+  }
+
   override fun onHiddenChanged(hidden: Boolean) {
     super.onHiddenChanged(hidden)
     mDelegate.onHiddenChanged(this, hidden)
@@ -35,6 +43,10 @@ abstract class ArchFragment : Fragment(), ISupportLifecycle {
   override fun setUserVisibleHint(isVisibleToUser: Boolean) {
     super.setUserVisibleHint(isVisibleToUser)
     mDelegate.setUserVisibleHint(this, isVisibleToUser)
+  }
+
+  override fun getSupportDelegate(): VisibilityDelegate {
+    return mDelegate
   }
 
   override fun onSupportVisible() {
