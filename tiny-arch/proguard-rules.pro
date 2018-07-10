@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# 保存Presenter,防止保存和还原数据错误
+-keepclassmembers class * extends nucleus5.presenter.Presenter {
+    <init>();
+}
