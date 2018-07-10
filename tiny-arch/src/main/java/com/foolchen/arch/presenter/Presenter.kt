@@ -82,7 +82,7 @@ open class Presenter<View> {
   /**
    * 初始化presenter
    */
-  fun create(bundle: Bundle) {
+  fun create(bundle: Bundle?) {
     onCreate(bundle)
   }
 

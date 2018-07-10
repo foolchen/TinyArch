@@ -120,10 +120,13 @@ open class RxPresenter<View> : Presenter<View>() {
    */
   fun <T> restartableFirst(restartableId: Int, observableFactory: Factory<Observable<T>>,
       onNext: BiConsumer<View, T>, onError: BiConsumer<View, Throwable>?) {
-    restartable(restartableId, Factory {
-      observableFactory.create()
-          .compose(this@RxPresenter.deliverFirst())
-          .subscribe(split(onNext, onError))
+    restartable(restartableId, object : Factory<Disposable> {
+      override fun create(): Disposable {
+        return observableFactory.create()
+            .compose(this@RxPresenter.deliverFirst())
+            .subscribe(split(onNext, onError))
+      }
+
     })
   }
 
@@ -146,10 +149,13 @@ open class RxPresenter<View> : Presenter<View>() {
    */
   fun <T> restartableLatestCache(restartableId: Int, observableFactory: Factory<Observable<T>>,
       onNext: BiConsumer<View, T>, onError: BiConsumer<View, Throwable>?) {
-    restartable(restartableId, Factory {
-      observableFactory.create()
-          .compose(this@RxPresenter.deliverLatestCache())
-          .subscribe(split(onNext, onError))
+    restartable(restartableId, object : Factory<Disposable> {
+      override fun create(): Disposable {
+        return observableFactory.create()
+            .compose(this@RxPresenter.deliverLatestCache())
+            .subscribe(split(onNext, onError))
+      }
+
     })
   }
 
@@ -172,12 +178,20 @@ open class RxPresenter<View> : Presenter<View>() {
    * */
   fun <T> restartableReplay(restartableId: Int, observableFactory: Factory<Observable<T>>,
       onNext: BiConsumer<View, T>, onError: BiConsumer<View, Throwable>?) {
-    restartable(restartableId, Factory {
-      observableFactory.create()
-          .compose(this@RxPresenter.deliverReplay())
-          .subscribe(split(onNext, onError))
-
+    restartable(restartableId, object : Factory<Disposable> {
+      override fun create(): Disposable {
+        return observableFactory.create()
+            .compose(this@RxPresenter.deliverReplay())
+            .subscribe(split(onNext, onError))
+      }
     })
+  }
+
+  inner class F : Factory<View> {
+    override fun create(): View {
+      TODO(
+          "not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
   }
 
   /**
