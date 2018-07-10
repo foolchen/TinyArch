@@ -11,6 +11,7 @@ import com.foolchen.arch.presenter.delivery.DeliverReplay
 import com.foolchen.arch.presenter.delivery.Delivery
 import com.foolchen.arch.view.OptionalView
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiConsumer
 import io.reactivex.functions.Consumer
@@ -26,7 +27,7 @@ private const val REQUEST_KEY = "RxPresenter#requested"
  */
 open class RxPresenter<View> {
   private val mViews = BehaviorSubject.create<OptionalView<View>>()
-  // private val mSubscriptions = CompositeDisposable()
+  private val mDisposables = CompositeDisposable()
 
   private val mRestartables = SparseArray<Factory<Disposable>>()
   private val mRestartableDisposables = SparseArray<Disposable>()
@@ -41,6 +42,20 @@ open class RxPresenter<View> {
    * @see [BehaviorSubject]
    */
   fun view(): Observable<OptionalView<View>> = mViews
+
+  /**
+   * 注册一个disposable,在onDestroy()时会被注销
+   */
+  fun add(disposable: Disposable) {
+    mDisposables.add(disposable)
+  }
+
+  /**
+   * 移除一个disposable
+   */
+  fun remove(disposable: Disposable) {
+    mDisposables.remove(disposable)
+  }
 
   /**
    * restartable可以是任意可用的（可被订阅的）RxJava [Observable]。
