@@ -1,4 +1,4 @@
-package com.foolchen.arch
+package com.foolchen.arch.app
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
