@@ -6,7 +6,6 @@ package com.foolchen.arch.presenter
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.text.TextUtils.split
-import android.util.Log
 import android.util.SparseArray
 import com.foolchen.arch.presenter.delivery.DeliverFirst
 import com.foolchen.arch.presenter.delivery.DeliverLatestCache
@@ -19,17 +18,17 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiConsumer
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.BehaviorSubject
-import java.util.concurrent.CopyOnWriteArrayList
 
 
 private const val REQUESTED_KEY = "RxPresenter#requested"
 
 /**
+ * [Presenter]的扩展,提供了RxJava方式的调用
  * @author chenchong
  * 2018/6/6
  * 上午11:21
  */
-open class RxPresenter<View> {
+open class RxPresenter<View> : Presenter<View>() {
   private val mViews = BehaviorSubject.create<OptionalView<View>>()
   private val mDisposables = CompositeDisposable()
 
@@ -232,47 +231,26 @@ open class RxPresenter<View> {
     return Consumer { delivery -> delivery.split(onNext, onError) }
   }
 
-  /**
-   * 该方法在Presenter创建后被调用<br/>
-   * 该方法用于被继承覆写.
-   */
+
   @CallSuper
-  protected fun onCreate(savedState: Bundle?) {
+  override fun onCreate(savedState: Bundle?) {
     if (savedState != null) {
       mRequested.addAll(savedState.getIntegerArrayList(REQUESTED_KEY)!!)
     }
   }
 
-  /**
-   * 该方法在view被绑定到presenter时被调用<br/>
-   * 一般来说,该调用发生在[android.app.Activity.onResume],[android.app.Fragment.onResume]和[android.view.View.onAttachedToWindow]
-   * 被调用时.
-   * <br/>
-   * 该方法用于被继承覆写.
-   */
   @CallSuper
-  protected fun onTakeView(view: View) {
+  override fun onTakeView(view: View) {
     mViews.onNext(OptionalView(view))
   }
 
-  /**
-   * 该方法在view被绑定到presenter时被调用<br/>
-   * 一般来说,该调用发生在[android.app.Activity.onPause],[android.app.Fragment.onPause]和[android.view.View.onDetachedFromWindow]
-   * 被调用时.
-   * <br/>
-   * 该方法用于被继承覆写.
-   */
   @CallSuper
-  protected fun onDropView() {
+  override fun onDropView() {
     mViews.onNext(OptionalView(null))
   }
 
-  /**
-   * 在用户关闭了view(销毁)时,该方法被调用<br/>
-   * 该方法用于被继承覆写.
-   */
   @CallSuper
-  protected fun onDestroy() {
+  override fun onDestroy() {
     mViews.onComplete()
     mDisposables.dispose()
     val size = mRestartableDisposables.size()
@@ -281,12 +259,8 @@ open class RxPresenter<View> {
     }
   }
 
-  /**
-   * 通过[state]保存当前presenter的状态,在页面重建后将保存的状态传递给新的presenter<br/>
-   * 该方法用于被继承覆写
-   */
   @CallSuper
-  protected fun onSave(state: Bundle) {
+  override fun onSave(state: Bundle) {
     for (i in mRequested.indices.reversed()) {
       val restartableId = mRequested[i]
       val disposable = mRestartableDisposables.get(restartableId)
