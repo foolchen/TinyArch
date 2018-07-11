@@ -37,5 +37,5 @@ dependencies {
 
   implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.4'
 
-  implementation project(':tiny-arch')
+  implementation project(':arch-core')
 }
