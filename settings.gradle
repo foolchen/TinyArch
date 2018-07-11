@@ -1,1 +1,1 @@
-include ':app', ':arch-core', ':arch-annotations'
+include ':app', ':arch-core', ':arch-annotations', ':arch-thirdparty'
