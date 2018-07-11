@@ -1,4 +1,4 @@
-package com.foolchen.tinyfragmentmvp
+package com.foolchen.samples
 
 import org.junit.Test
 

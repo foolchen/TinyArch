@@ -1,4 +1,4 @@
-package com.foolchen.tinyfragmentmvp
+package com.foolchen.arch.samples
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

@@ -1,4 +1,4 @@
-package com.foolchen.tinyfragmentmvp
+package com.foolchen.arch.samples
 
 import android.annotation.SuppressLint
 import android.os.Bundle
