@@ -1,8 +1,11 @@
 package com.foolchen.arch.presenter
 
+import com.foolchen.arch.config.sApplicationContext
+import com.foolchen.arch.utils.warning
 import io.reactivex.Observable
 import io.reactivex.functions.BiConsumer
 import nucleus5.presenter.Factory
+import nucleus5.presenter.Presenter
 import nucleus5.presenter.RxPresenter
 
 /**
@@ -12,6 +15,7 @@ import nucleus5.presenter.RxPresenter
  * 下午5:28
  */
 class BasePresenter<View> : RxPresenter<View>() {
+  private val mPresenters = ArrayList<Presenter<*>>()
 
   fun <T> produce(restartableId: Int,
       factory: Factory<Observable<T>>,
@@ -31,5 +35,16 @@ class BasePresenter<View> : RxPresenter<View>() {
         restartableFirst(restartableId, factory, success, failure)
       }
     }
+  }
+
+  fun registerPresenter(p: Presenter<View>) {
+    if (mPresenters.contains(p)) {
+      sApplicationContext().warning("$p has been registered already.Happen in {$javaClass}")
+    }
+    mPresenters.add(p)
+  }
+
+  fun unregisterPresenter(p: Presenter<View>) {
+    mPresenters.remove(p)
   }
 }
