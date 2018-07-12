@@ -38,4 +38,7 @@ dependencies {
 
   implementation project(':arch-core')
   implementation project(':arch-thirdparty')
+
+  implementation project(':arch-annotations')
+  annotationProcessor project(":arch-compiler")
 }
