@@ -1,5 +1,6 @@
 package com.foolchen.arch.presenter
 
+import android.os.Bundle
 import com.foolchen.arch.config.sApplicationContext
 import com.foolchen.arch.utils.warning
 import io.reactivex.Observable
@@ -15,7 +16,7 @@ import nucleus5.presenter.RxPresenter
  * 下午5:28
  */
 class BasePresenter<View> : RxPresenter<View>() {
-  private val mPresenters = ArrayList<Presenter<*>>()
+  private val mPresenters = ArrayList<Presenter<View>>()
 
   fun <T> produce(restartableId: Int,
       factory: Factory<Observable<T>>,
@@ -46,5 +47,41 @@ class BasePresenter<View> : RxPresenter<View>() {
 
   fun unregisterPresenter(p: Presenter<View>) {
     mPresenters.remove(p)
+  }
+
+  override fun create(bundle: Bundle?) {
+    super.create(bundle)
+    // TODO: 2018/7/12 wayne 此处需要一套还原机制,来从savedState中取出各个presenter,并且还原数据
+    for (p in mPresenters) {
+      // TODO: 2018/7/12 wayne 此处先留空,需要待还原机制完成后,再传入Bundle
+      p.create(null)
+    }
+  }
+
+  override fun destroy() {
+    super.destroy()
+    for (p in mPresenters) {
+      p.destroy()
+    }
+    mPresenters.clear()
+  }
+
+  override fun save(state: Bundle?) {
+    super.save(state)
+    // TODO: 2018/7/12 wayne 需要一套保存机制,将mPresenters的状态保存到state中(以每个presenter对应一个bundle的形式)
+  }
+
+  override fun takeView(view: View) {
+    super.takeView(view)
+    for (p in mPresenters) {
+      p.takeView(view)
+    }
+  }
+
+  override fun dropView() {
+    super.dropView()
+    for (p in mPresenters) {
+      p.dropView()
+    }
   }
 }
