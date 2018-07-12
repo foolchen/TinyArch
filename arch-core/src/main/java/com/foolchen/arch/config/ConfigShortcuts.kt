@@ -11,6 +11,8 @@ fun sInit(context: Context): Configurator {
   return Configurator
 }
 
+fun <T> sConfiguration(key: Any) = Configurator.getConfiguration<T>(key)
+
 fun sApplicationContext() = Configurator.getConfiguration<Context>(APPLICATION_CONTEXT)
 
 fun sDevelop() = Configurator.getConfiguration<Boolean>(DEVELOP)

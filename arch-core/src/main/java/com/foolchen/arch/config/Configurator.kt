@@ -1,6 +1,5 @@
 package com.foolchen.arch.config
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 
@@ -71,16 +70,19 @@ object Configurator {
     return this
   }
 
-  /**
+  /*
+   /**
    * 配置一个全局的Activity,用于被各第三方组件使用
    *
    * **注意:配置在此处的Activity,应该为整个应用的主Activity(一直在站内存在的Activity).**
    * **由于配置在此处的Activity会被一直被配置文件持有引用,所以如果此处配置的为其他Activity的话,会造成内存泄露.**
+   * **该Activity不应该被拿来做创建布局等与上下文有关的工作.**
    */
   fun withActivity(activity: Activity): Configurator {
     withConfiguration(ACTIVITY, activity)
     return this
   }
+  */
 
   private fun checkConfiguration() {
     checkConfiguration(CONFIG_READY)
@@ -97,9 +99,9 @@ object Configurator {
   }
 }
 
-internal const val CONFIG_READY = "config_ready"
-internal const val APPLICATION_CONTEXT = "application_context";
-internal const val WECHAT_APP_ID = "wechat_app_id"
-internal const val WECHAT_APP_SECRET = "wechat_app_secret"
-internal const val ACTIVITY = "activity"
-internal const val DEVELOP = "develop";
+private const val CONFIG_READY = "config_ready"
+const val APPLICATION_CONTEXT = "application_context"
+const val WECHAT_APP_ID = "wechat_app_id"
+const val WECHAT_APP_SECRET = "wechat_app_secret"
+const val ACTIVITY = "activity"
+const val DEVELOP = "develop"

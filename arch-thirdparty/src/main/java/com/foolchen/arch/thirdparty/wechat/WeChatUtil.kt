@@ -1,6 +1,10 @@
 package com.foolchen.arch.thirdparty.wechat
 
-import android.util.Log
+import com.foolchen.arch.config.WECHAT_APP_ID
+import com.foolchen.arch.config.sApplicationContext
+import com.foolchen.arch.config.sConfiguration
+import com.tencent.mm.opensdk.openapi.IWXAPI
+import com.tencent.mm.opensdk.openapi.WXAPIFactory
 
 /**
  * 微信工具箱
@@ -11,7 +15,14 @@ import android.util.Log
  */
 
 object WeChatUtil {
+  private val WXAPI: IWXAPI
+
   init {
-    Log.d("DEBUG", "WeChatUtil init");
+    val appId = sConfiguration<String>(WECHAT_APP_ID)
+    WXAPI = WXAPIFactory.createWXAPI(sApplicationContext(),
+        appId, true)
+    WXAPI.registerApp(appId)
   }
+
+  fun getWXAPI() = WXAPI
 }
