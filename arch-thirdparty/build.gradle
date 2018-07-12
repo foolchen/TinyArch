@@ -30,5 +30,6 @@ dependencies {
   androidTestImplementation 'com.android.support.test:runner:1.0.2'
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+  // 该library旨在被依赖,所以其中引用的第三方库应该开放给上层app
   api 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.4'
 }
