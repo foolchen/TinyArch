@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples
+package com.foolchen.arch.samples.ui
 
 import android.os.Bundle
 import android.util.Log

@@ -1,9 +1,10 @@
-package com.foolchen.arch.samples
+package com.foolchen.arch.samples.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import com.foolchen.arch.samples.R
 import org.jetbrains.anko.bundleOf
 
 /**

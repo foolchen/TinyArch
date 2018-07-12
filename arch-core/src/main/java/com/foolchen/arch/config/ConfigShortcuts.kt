@@ -13,5 +13,7 @@ fun sInit(context: Context): Configurator {
 
 fun sApplicationContext() = Configurator.getConfiguration<Context>(APPLICATION_CONTEXT)
 
+fun sDevelop() = Configurator.getConfiguration<Boolean>(DEVELOP)
+
 
 

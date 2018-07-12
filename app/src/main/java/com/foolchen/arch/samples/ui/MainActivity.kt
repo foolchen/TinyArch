@@ -1,11 +1,11 @@
-package com.foolchen.arch.samples
+package com.foolchen.arch.samples.ui
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-
+import com.foolchen.arch.samples.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

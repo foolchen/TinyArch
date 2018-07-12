@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples
+package com.foolchen.arch.samples.ui
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.foolchen.arch.samples.R
 import kotlinx.android.synthetic.main.fragment_view_pager.*
 import org.jetbrains.anko.bundleOf
 

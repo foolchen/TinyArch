@@ -2,6 +2,7 @@ package com.foolchen.arch.config
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 
 /**
  * 全局配置用工具
@@ -17,6 +18,7 @@ object Configurator {
   // private val ARCH_HANDLER = Handler()
 
   init {
+    Log.d("DEBUG", "Configurator init.")
     ARCH_CONFIGS[CONFIG_READY] = false
   }
 
@@ -43,8 +45,13 @@ object Configurator {
     return this
   }
 
-  fun withApplicationContext(context: Context): Configurator {
+  internal fun withApplicationContext(context: Context): Configurator {
     withConfiguration(APPLICATION_CONTEXT, context)
+    return this
+  }
+
+  fun withDevelop(isDevelop: Boolean): Configurator {
+    withConfiguration(DEVELOP, isDevelop)
     return this
   }
 
@@ -53,6 +60,14 @@ object Configurator {
    */
   fun withWeChatAppId(appId: String): Configurator {
     withConfiguration(WECHAT_APP_ID, appId)
+    return this
+  }
+
+  /**
+   * 配置微信分享的APP Secret
+   */
+  fun withWeChatSecret(appSecret: String): Configurator {
+    withConfiguration(WECHAT_APP_SECRET, appSecret)
     return this
   }
 
@@ -85,4 +100,6 @@ object Configurator {
 internal const val CONFIG_READY = "config_ready"
 internal const val APPLICATION_CONTEXT = "application_context";
 internal const val WECHAT_APP_ID = "wechat_app_id"
+internal const val WECHAT_APP_SECRET = "wechat_app_secret"
 internal const val ACTIVITY = "activity"
+internal const val DEVELOP = "develop";

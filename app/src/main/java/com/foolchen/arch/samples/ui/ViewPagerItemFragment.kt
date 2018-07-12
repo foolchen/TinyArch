@@ -1,10 +1,11 @@
-package com.foolchen.arch.samples
+package com.foolchen.arch.samples.ui
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.foolchen.arch.samples.R
 import kotlinx.android.synthetic.main.fragment_view_pager_item.*
 import org.jetbrains.anko.bundleOf
 
@@ -32,7 +33,8 @@ class ViewPagerItemFragment : BaseFragment() {
     if (f == null) {
       f = NestedViewPagerItemFragment()
       f.arguments = bundleOf("tab_name" to tv_item.text)
-      childFragmentManager.beginTransaction().replace(R.id.fragment_container, f).commit()
+      childFragmentManager.beginTransaction().replace(
+          R.id.fragment_container, f).commit()
     }
   }
 

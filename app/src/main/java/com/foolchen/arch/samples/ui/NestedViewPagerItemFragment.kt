@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples
+package com.foolchen.arch.samples.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle

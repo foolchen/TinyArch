@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples
+package com.foolchen.arch.samples.ui
 
 import android.graphics.Color
 import android.os.Bundle
