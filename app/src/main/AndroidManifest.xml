@@ -19,7 +19,7 @@
       android:theme="@style/AppTheme">
     <activity
         android:label="@string/app_name"
-        android:name="com.foolchen.arch.samples.ui.MainActivity"
+        android:name="com.foolchen.arch.samples.samples.lifecycle.MainActivity"
         android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -27,7 +27,7 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity android:name="com.foolchen.arch.samples.ui.FragmentContainerActivity"/>
+    <activity android:name="com.foolchen.arch.samples.samples.lifecycle.FragmentContainerActivity"/>
   </application>
 
 </manifest>

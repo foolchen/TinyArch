@@ -1,10 +1,12 @@
-package com.foolchen.arch.samples.ui
+package com.foolchen.arch.samples.samples.lifecycle
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.foolchen.arch.samples.R
+import com.foolchen.arch.samples.base.NoPresenterLogFragment
+import com.foolchen.arch.samples.samples.ui.MultiplePresentersSamplesFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 
 /**
@@ -23,7 +25,14 @@ class MainActivityFragment : NoPresenterLogFragment() {
       startFragment(HiddenChangedFragment::class.java.name)
     }
 
-    btn_vp.setOnClickListener { startFragment(ViewPagerFragment::class.java.name) }
+    btn_vp.setOnClickListener {
+      startFragment(
+          ViewPagerFragment::class.java.name)
+    }
+
+    btn_presenters.setOnClickListener {
+      startFragment(MultiplePresentersSamplesFragment::class.java.name)
+    }
   }
 
 

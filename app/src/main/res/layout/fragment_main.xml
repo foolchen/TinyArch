@@ -4,26 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.foolchen.arch.samples.ui.MainActivityFragment"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.foolchen.arch.samples.samples.lifecycle.MainActivityFragment"
+    tools:showIn="@layout/activity_main"
+    >
 
-    <Button
-        android:id="@+id/btn_hidden"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="测试onHiddenChanged(boolean)方法"
-        />
+  <Button
+      android:id="@+id/btn_hidden"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="测试onHiddenChanged(boolean)方法"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      />
 
-    <Button
-        android:id="@+id/btn_vp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="测试ViewPager"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_hidden"
-        />
+  <Button
+      android:id="@+id/btn_vp"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="测试ViewPager"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/btn_hidden"
+      />
+
+  <Button
+      android:id="@+id/btn_presenters"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="Presenters演示"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/btn_vp"
+      />
 
 </android.support.constraint.ConstraintLayout>

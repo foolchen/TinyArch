@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples.ui
+package com.foolchen.arch.samples.samples.lifecycle
 
 import android.content.Intent
 import android.os.Bundle

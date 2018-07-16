@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples.ui
+package com.foolchen.arch.samples.samples.lifecycle
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar

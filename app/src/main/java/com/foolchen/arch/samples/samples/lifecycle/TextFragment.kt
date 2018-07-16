@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples.ui
+package com.foolchen.arch.samples.samples.lifecycle
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.foolchen.arch.samples.base.NoPresenterLogFragment
 
 /**
  * @author chenchong
