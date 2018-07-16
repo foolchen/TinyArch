@@ -13,7 +13,7 @@ import android.widget.TextView
  * 2018/6/4
  * 下午6:00
  */
-class TextFragment : BaseFragment() {
+class TextFragment : NoPresenterLogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {

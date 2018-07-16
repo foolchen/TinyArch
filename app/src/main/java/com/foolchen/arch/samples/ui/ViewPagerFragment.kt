@@ -17,7 +17,7 @@ import org.jetbrains.anko.bundleOf
  * 2018/6/5
  * 下午2:57
  */
-class ViewPagerFragment : BaseFragment() {
+class ViewPagerFragment : NoPresenterLogFragment() {
 
   private lateinit var mItems: ArrayList<String>
 

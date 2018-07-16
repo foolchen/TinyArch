@@ -14,7 +14,7 @@ import org.jetbrains.anko.bundleOf
  * 2018/6/5
  * 下午3:04
  */
-class ViewPagerItemFragment : BaseFragment() {
+class ViewPagerItemFragment : NoPresenterLogFragment() {
 
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

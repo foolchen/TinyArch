@@ -1,14 +1,17 @@
 package com.foolchen.arch.app
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import nucleus5.presenter.Presenter
+import nucleus5.view.NucleusSupportFragment
 
 /**
+ * 所有业务Fragment的基类,可以应用MVP模式
+ *
  * @author chenchong
  * 2018/6/4
  * 下午4:25
  */
-abstract class ArchFragment : Fragment(), ISupportLifecycle {
+abstract class ArchFragment<P : Presenter<*>> : NucleusSupportFragment<P>(), ISupportLifecycle {
   private val mDelegate = VisibilityDelegate()
 
   override fun onCreate(savedInstanceState: Bundle?) {

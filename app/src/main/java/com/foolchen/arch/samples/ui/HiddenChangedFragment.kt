@@ -13,7 +13,7 @@ import org.jetbrains.anko.bundleOf
  * 2018/6/4
  * 下午5:44
  */
-class HiddenChangedFragment : BaseFragment() {
+class HiddenChangedFragment : NoPresenterLogFragment() {
   private lateinit var mFragment: TextFragment
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

@@ -14,7 +14,7 @@ import android.widget.TextView
  * 2018/6/5
  * 下午3:22
  */
-class NestedViewPagerItemFragment : BaseFragment() {
+class NestedViewPagerItemFragment : NoPresenterLogFragment() {
 
 
   @SuppressLint("SetTextI18n")
