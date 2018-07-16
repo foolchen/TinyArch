@@ -1,8 +1,6 @@
 package com.foolchen.arch.presenter
 
 import android.os.Bundle
-import com.foolchen.arch.config.sApplicationContext
-import com.foolchen.arch.utils.warning
 import io.reactivex.Observable
 import io.reactivex.functions.BiConsumer
 import nucleus5.presenter.Factory
@@ -16,7 +14,12 @@ import nucleus5.presenter.RxPresenter
  * 下午5:28
  */
 class BasePresenter<View> : RxPresenter<View>() {
-  private val mPresenters = ArrayList<Presenter<View>>()
+  private val BUNDLES_KEY = "bundles"
+  private var mPresentersFactory: PresentersFactory<View>? = null
+  private val mPresenters: HashMap<String, Presenter<View>> = HashMap()
+  private val mBundles: HashMap<String, Bundle> = HashMap()
+
+  private var mView: View? = null
 
   fun <T> produce(restartableId: Int,
       factory: Factory<Observable<T>>,
@@ -38,50 +41,80 @@ class BasePresenter<View> : RxPresenter<View>() {
     }
   }
 
-  fun registerPresenter(p: Presenter<View>) {
-    if (mPresenters.contains(p)) {
-      sApplicationContext().warning("$p has been registered already.Happen in {$javaClass}")
-    }
-    mPresenters.add(p)
-  }
-
-  fun unregisterPresenter(p: Presenter<View>) {
-    mPresenters.remove(p)
-  }
-
   override fun create(bundle: Bundle?) {
     super.create(bundle)
-    // TODO: 2018/7/12 wayne 此处需要一套还原机制,来从savedState中取出各个presenter,并且还原数据
-    for (p in mPresenters) {
-      // TODO: 2018/7/12 wayne 此处先留空,需要待还原机制完成后,再传入Bundle
-      p.create(null)
+    val bundles = bundle?.getParcelableArrayList<BundleStorage>(BUNDLES_KEY)
+    bundles?.forEach {
+      mBundles[it.key] = it.bundle
+    }
+
+    mPresenters.forEach { entry ->
+      entry.value.create(mBundles[entry.key])
     }
   }
 
   override fun destroy() {
     super.destroy()
-    for (p in mPresenters) {
-      p.destroy()
+    mPresenters.forEach {
+      it.value.destroy()
     }
     mPresenters.clear()
+    mBundles.clear()
   }
 
-  override fun save(state: Bundle?) {
+  override fun save(state: Bundle) {
     super.save(state)
-    // TODO: 2018/7/12 wayne 需要一套保存机制,将mPresenters的状态保存到state中(以每个presenter对应一个bundle的形式)
+    // 此处保存presenter的状态
+    val bundles = ArrayList<BundleStorage>()
+    mPresenters.forEach { entry ->
+      // 将每个presenter的状态保存到bundle中
+      var bundle = mBundles[entry.key]
+      if (bundle == null) {
+        bundle = Bundle()
+        mBundles[entry.key] = bundle
+        entry.value.save(bundle)
+      }
+      bundles.add(BundleStorage(entry.key, bundle))
+    }
+    // 将所有的bundle保存到其宿主presenter的bundle中
+
+    state.putParcelableArrayList(BUNDLES_KEY, bundles)
   }
 
   override fun takeView(view: View) {
     super.takeView(view)
-    for (p in mPresenters) {
-      p.takeView(view)
-    }
+    mView = view
+    mPresenters.forEach { it.value.takeView(view) }
   }
 
   override fun dropView() {
     super.dropView()
-    for (p in mPresenters) {
-      p.dropView()
+    mView = null
+    mPresenters.forEach { it.value.dropView() }
+  }
+
+  /**
+   * 为当前presenter设置一个创建presenter的工厂
+   */
+  fun setPresentersFactory(factory: PresentersFactory<View>) {
+    this.mPresentersFactory = factory
+  }
+
+  /**
+   * 根据特定的标识获取对应的presenter
+   */
+  fun <P : Presenter<View>> getPresenter(o: Any): P {
+    if (mPresentersFactory == null) {
+      throw NullPointerException("presenters factory has not been setup")
     }
+    var presenter = mPresenters[o.toString()]
+    if (presenter == null) {
+      // 如果presenter不存在,则使用工厂创建一个
+      presenter = mPresentersFactory!!.createPresenter(o)
+      mPresenters[o.toString()] = presenter
+      presenter.create(mBundles[o.toString()])
+    }
+    @Suppress("UNCHECKED_CAST")
+    return presenter as P
   }
 }
