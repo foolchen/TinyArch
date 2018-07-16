@@ -11,7 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * @author wayne
+ * @author chenchong
  * 2018/7/12
  * 上午9:51
  */

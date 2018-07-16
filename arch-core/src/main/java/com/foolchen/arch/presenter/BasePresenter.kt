@@ -13,7 +13,7 @@ import nucleus5.presenter.RxPresenter
  * 2018/7/10
  * 下午5:28
  */
-class BasePresenter<View> : RxPresenter<View>() {
+open class BasePresenter<View> : RxPresenter<View>() {
   private val BUNDLES_KEY = "bundles"
   private var mPresentersFactory: PresentersFactory<View>? = null
   private val mPresenters: HashMap<String, Presenter<View>> = HashMap()
