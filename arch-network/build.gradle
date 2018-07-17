@@ -1,18 +1,15 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply from: '../kotlin.gradle'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   defaultConfig {
-    applicationId "com.foolchen.arch.samples"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targeSdkVersion
-    versionCode 1
-    versionName "1.0"
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-    buildConfigField "boolean", "DEVELOP", develop.toString()
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
+
   buildTypes {
     release {
       minifyEnabled false
@@ -23,15 +20,8 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
+
   testImplementation "junit:junit:$junitVersion"
   androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
   androidTestImplementation "com.android.support.test.espresso:espresso-core:$testEspressoVersion"
-
-  implementation "org.jetbrains.anko:anko:$anko_version"
-
-  implementation project(':arch-core')
-  implementation project(':arch-thirdparty')
-
-  implementation project(':arch-annotations')
-  kapt project(":arch-compiler")
 }

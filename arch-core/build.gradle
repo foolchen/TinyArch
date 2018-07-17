@@ -1,16 +1,12 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+apply from: '../kotlin.gradle'
 
 android {
-  compileSdkVersion 27
-
-
+  compileSdkVersion rootProject.ext.compileSdkVersion
 
   defaultConfig {
-    minSdkVersion 16
-    targetSdkVersion 27
-    versionCode 1
-    versionName "1.0"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targeSdkVersion
 
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
@@ -25,10 +21,12 @@ android {
 
 dependencies {
   api fileTree(dir: 'libs', include: ['*.jar'])
-  api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-  api 'com.android.support:appcompat-v7:27.1.1'
+  api "com.android.support:appcompat-v7:$supportVersion"
+  api "com.android.support:design:$supportVersion"
+  api "com.android.support.constraint:constraint-layout:$constraintLayoutVersin"
 
+  api 'io.reactivex.rxjava2:rxjava:2.1.14'
   api('info.android15.nucleus5:nucleus:7.0.0') {
     exclude group: "com.android.support"
     exclude group: "io.reactivex.rxjava2"
@@ -42,12 +40,9 @@ dependencies {
     exclude group: "io.reactivex.rxjava2"
   }
 
-  testImplementation 'junit:junit:4.12'
-  androidTestImplementation 'com.android.support.test:runner:1.0.2'
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-
-  api 'io.reactivex.rxjava2:rxjava:2.1.14'
+  testImplementation "junit:junit:$junitVersion"
+  androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
+  androidTestImplementation "com.android.support.test.espresso:espresso-core:$testEspressoVersion"
 }
 repositories {
   mavenCentral()

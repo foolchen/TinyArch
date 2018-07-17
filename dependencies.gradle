@@ -1,0 +1,19 @@
+ext {
+  // 开发中标识
+  // 如果为false,则标识为release模式,需要将debug模块/功能关闭
+  develop = true
+
+  // sdk相关配置
+  compileSdkVersion = 27
+  minSdkVersion = 16
+  targeSdkVersion = 27
+
+  // support libraries配置
+  supportVersion = '27.1.1'
+  constraintLayoutVersin = '1.1.2'
+
+  // test libraries配置
+  junitVersion = '4.12'
+  testRunnerVersion = '1.0.2'
+  testEspressoVersion = '3.0.2'
+}

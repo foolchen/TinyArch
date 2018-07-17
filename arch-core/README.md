@@ -33,3 +33,5 @@
 |         \--- com.android.support:support-core-ui:27.1.1 (*)
 ```
 从上面的依赖关系中可以看出，添加了`appcompat-v7`依赖后，其他所有相关`support`的依赖已全部被添加，不需要再手动添加。
+
+**注意:`design`和`constraint-layout`库并不属于`support`系列，故需要单独添加。**
