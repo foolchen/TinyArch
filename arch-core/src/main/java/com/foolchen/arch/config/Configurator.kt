@@ -70,6 +70,16 @@ object Configurator {
     return this
   }
 
+  fun withBaseUrl(baseUrl: String): Configurator {
+    withConfiguration(BASE_URL, baseUrl)
+    return this
+  }
+
+  fun withTimeoutSeconds(seconds: Int): Configurator {
+    withConfiguration(TIME_OUT_SECONDS, seconds)
+    return this
+  }
+
   /*
    /**
    * 配置一个全局的Activity,用于被各第三方组件使用
@@ -103,5 +113,6 @@ private const val CONFIG_READY = "config_ready"
 const val APPLICATION_CONTEXT = "application_context"
 const val WECHAT_APP_ID = "wechat_app_id"
 const val WECHAT_APP_SECRET = "wechat_app_secret"
-const val ACTIVITY = "activity"
 const val DEVELOP = "develop"
+const val BASE_URL = "base_url"
+const val TIME_OUT_SECONDS = "time_out_seconds"
