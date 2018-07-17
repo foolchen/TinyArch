@@ -4,10 +4,12 @@ import com.foolchen.arch.config.BASE_URL
 import com.foolchen.arch.config.TIME_OUT_SECONDS
 import com.foolchen.arch.config.sApplicationContext
 import com.foolchen.arch.config.sConfiguration
+import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
@@ -23,7 +25,7 @@ class RetrofitUtil private constructor() {
   private var sRetrofit: Retrofit? = null
 
   companion object {
-    fun get(): RetrofitUtil {
+    fun getInstance(): RetrofitUtil {
       return Holder.sInstance
     }
   }
@@ -53,8 +55,8 @@ class RetrofitUtil private constructor() {
    * 对retrofit进行初始化
    */
   @Synchronized
-  fun init(networkInterceptors: List<Interceptor>? = null,
-      localInterceptors: List<Interceptor>? = null) {
+  fun init(networkInterceptors: List<Interceptor?>? = null,
+      localInterceptors: List<Interceptor?>? = null) {
     val builder = OkHttpClient.Builder()
     // 设置超时时间
     builder
@@ -68,19 +70,23 @@ class RetrofitUtil private constructor() {
 
     // 添加拦截器
     networkInterceptors?.forEach {
-      builder.addNetworkInterceptor(it)
+      if (it != null)
+        builder.addNetworkInterceptor(it)
     }
 
     localInterceptors?.forEach {
-      builder.addInterceptor(it)
+      if (it != null)
+        builder.addInterceptor(it)
     }
 
     // 生成client
     val client = builder.build()
 
+    val gson = GsonBuilder().setLenient().create()
     sRetrofit = Retrofit.Builder()
         .baseUrl(sConfiguration(BASE_URL) as String)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(client)
         .build()
 

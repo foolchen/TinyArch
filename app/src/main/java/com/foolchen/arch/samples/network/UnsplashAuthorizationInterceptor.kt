@@ -14,10 +14,8 @@ class UnsplashAuthorizationInterceptor : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
     val builder = request.newBuilder()
-    builder.addHeader("Authorization: Client-ID",
-        "1bcf57fcb6416c044b79065bb463aed67f0ee82f4005f9d02f26295cd4cf2b90")
+    builder.addHeader("Authorization",
+        "Client-ID 1bcf57fcb6416c044b79065bb463aed67f0ee82f4005f9d02f26295cd4cf2b90")
     return chain.proceed(builder.build())
   }
-
-
 }

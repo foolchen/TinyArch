@@ -1,9 +1,13 @@
 package com.foolchen.arch.samples
 
 import android.app.Application
+import com.facebook.stetho.Stetho
+import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.foolchen.arch.config.sDevelop
 import com.foolchen.arch.config.sInit
 import com.foolchen.arch.network.RetrofitUtil
 import com.foolchen.arch.samples.network.UnsplashAuthorizationInterceptor
+import okhttp3.logging.HttpLoggingInterceptor
 
 class App : Application() {
   override fun onCreate() {
@@ -12,10 +16,21 @@ class App : Application() {
         .withDevelop(BuildConfig.DEVELOP)
         .withWeChatAppId("123")
         .withWeChatSecret("123")
-        .withBaseUrl("https://www.baidu.com/")
+        .withBaseUrl(
+            "https://api.unsplash.com/")
+        .withTimeoutSeconds(10)
         .configure()
 
+    var stethoInterceptor: StethoInterceptor? = null
+    // 初始化stetho
+    if (sDevelop()) {
+      Stetho.initializeWithDefaults(this)
+      stethoInterceptor = StethoInterceptor()
+    }
+
     // 初始化retrofit
-    RetrofitUtil.get().init(networkInterceptors = listOf(UnsplashAuthorizationInterceptor()))
+    RetrofitUtil.getInstance().init(
+        networkInterceptors = listOf(UnsplashAuthorizationInterceptor(), stethoInterceptor,
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)))
   }
 }
