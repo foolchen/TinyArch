@@ -24,4 +24,6 @@ dependencies {
   testImplementation "junit:junit:$junitVersion"
   androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
   androidTestImplementation "com.android.support.test.espresso:espresso-core:$testEspressoVersion"
+
+  api "com.squareup.retrofit2:retrofit:2.4.0"
 }
