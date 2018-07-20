@@ -16,6 +16,9 @@ abstract class MultiTypesAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
   private val mMultiTypes = ArrayList<IMultiType<VH>>()
   private var mMultiTypeConverter: IMultiTypeConverter? = null
 
+  private var mItemChildClickListener: IItemChildClickListener? = null
+  private var mItemClickListener: IItemClickListener? = null
+
   abstract fun getItem(position: Int): Any
 
   /**
@@ -31,6 +34,19 @@ abstract class MultiTypesAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
   fun unregisterMultiType(type: IMultiType<VH>) {
     mMultiTypes.remove(type)
   }
+
+  fun setOnItemChildClickListener(listener: IItemChildClickListener) {
+    mItemChildClickListener = listener
+  }
+
+  fun getOnItemChildClickListener(): IItemChildClickListener? = mItemChildClickListener
+
+  fun getOnItemClickListener(): IItemClickListener? = mItemClickListener
+
+  fun setOnItemClickListener(listener: IItemClickListener) {
+    mItemClickListener = listener
+  }
+
 
   /**
    * 设置类型转换器,用于将各个列表中不同的数据类型转换为统一定义的viewType
@@ -72,6 +88,7 @@ abstract class MultiTypesAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
     val item = getItem(position)
     getIMultiTypeForItemViewType(itemViewType)?.bindViewHolder(holder,
         item, position, itemViewType)
+    (holder as? MultiTypeViewHolder)?.setAdapter(this@MultiTypesAdapter)
   }
 
   // 根据itemViewType来获取提供了对应类型ViewHolder的IMultiType

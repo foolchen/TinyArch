@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.foolchen.arch.samples.R
 import com.foolchen.arch.view.recyclerview.IMultiType
+import com.foolchen.arch.view.recyclerview.MultiTypeViewHolder
 
 /**
  * @author chenchong
@@ -51,7 +52,13 @@ class MultiTextAdapter : IMultiType<RecyclerView.ViewHolder> {
   }
 
   override fun containsItemViewType(viewType: Int): Boolean = mTypes.contains(viewType)
-  private class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)
+  private class Holder(itemView: View) : MultiTypeViewHolder(itemView) {
+    init {
+      addClick(R.id.text1)
+      addClick(R.id.text3)
+      enableItemClick(true)
+    }
+  }
 }
 
 

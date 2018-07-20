@@ -6,7 +6,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.foolchen.arch.app.NoPresenterFragment
+import com.foolchen.arch.view.recyclerview.IItemChildClickListener
+import com.foolchen.arch.view.recyclerview.IItemClickListener
 import com.foolchen.arch.view.recyclerview.MultiTypesAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -47,6 +50,18 @@ class MultiTypeSamplesFragment : NoPresenterFragment() {
     adapter.setConverter(MultiTypeConverter())
     adapter.registerMultiType(MultiTextAdapter())
     adapter.registerMultiType(MultiImagesAdapter())
+    adapter.setOnItemChildClickListener(object : IItemChildClickListener {
+      override fun onClick(view: View, data: Any, position: Int) {
+        Toast.makeText(this@MultiTypeSamplesFragment.context, "data = $data",
+            Toast.LENGTH_SHORT).show()
+      }
+    })
+    adapter.setOnItemClickListener(object : IItemClickListener {
+      override fun onItemClickListener(view: View, data: Any, position: Int) {
+        Toast.makeText(this@MultiTypeSamplesFragment.context, "Item Click",
+            Toast.LENGTH_SHORT).show()
+      }
+    })
     mRecyclerView.adapter = adapter
   }
 
