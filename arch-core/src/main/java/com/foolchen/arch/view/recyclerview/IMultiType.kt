@@ -1,5 +1,6 @@
 package com.foolchen.arch.view.recyclerview
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
@@ -12,23 +13,19 @@ import android.view.ViewGroup
  */
 interface IMultiType<VH : RecyclerView.ViewHolder> {
 
-  fun registerMultiType(type: IMultiType<VH>)
-
-  fun unregisterMultiType(type: IMultiType<VH>)
-
-  fun getItemViewType(item: IMultiTypeItem): Int
+  /**
+   * 用于为指定的类型提供对应的ViewHolder
+   */
+  fun provideViewHolder(context: Context, parent: ViewGroup,
+      viewType: Int): VH
 
   /**
-   * 获取当前IMultiType支持的所有类型
+   * 向ViewHolder绑定数据
    */
-  fun getItemViewTypes(): List<Int>
+  fun bindViewHolder(holder: VH, data: Any, position: Int, itemViewType: Int)
 
   /**
-   * 判断当前IMultiType中是否包含了对应的类型
+   * 判断当前IMultiType是否支持指定的类型
    */
-  fun containItemViewType(itemViewType: Int): Boolean
-
-  fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH
-
-  fun onBindViewHolder(holder: VH, position: Int)
+  fun containsItemViewType(viewType: Int): Boolean
 }

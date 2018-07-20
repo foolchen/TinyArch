@@ -8,5 +8,5 @@ package com.foolchen.arch.view.recyclerview
  * 上午11:12
  */
 interface IMultiTypeConverter {
-  fun <D : IMultiTypeItem> getItemViewType(item: D): Int
+  fun getItemViewType(item: Any): Int
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.foolchen.arch.samples.R
 import com.foolchen.arch.samples.base.NoPresenterLogFragment
+import com.foolchen.arch.samples.samples.ui.MultiTypeSamplesFragment
 import com.foolchen.arch.samples.samples.ui.MultiplePresentersSamplesFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -32,6 +33,9 @@ class MainActivityFragment : NoPresenterLogFragment() {
 
     btn_presenters.setOnClickListener {
       startFragment(MultiplePresentersSamplesFragment::class.java.name)
+    }
+    btn_multi_items_samples.setOnClickListener {
+      startFragment(MultiTypeSamplesFragment::class.java.name)
     }
   }
 
