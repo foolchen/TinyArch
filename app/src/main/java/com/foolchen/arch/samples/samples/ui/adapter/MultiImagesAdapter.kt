@@ -1,4 +1,4 @@
-package com.foolchen.arch.samples.samples.ui
+package com.foolchen.arch.samples.samples.ui.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView

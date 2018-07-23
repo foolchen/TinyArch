@@ -1,5 +1,7 @@
 package com.foolchen.arch.samples.samples.ui
 
+import com.foolchen.arch.samples.samples.ui.adapter.Images
+import com.foolchen.arch.samples.samples.ui.adapter.Texts
 import com.foolchen.arch.view.recyclerview.IMultiTypeConverter
 
 /**

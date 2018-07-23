@@ -8,6 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.foolchen.arch.app.NoPresenterFragment
+import com.foolchen.arch.samples.samples.ui.adapter.Images
+import com.foolchen.arch.samples.samples.ui.adapter.MultiImagesAdapter
+import com.foolchen.arch.samples.samples.ui.adapter.MultiTextAdapter
+import com.foolchen.arch.samples.samples.ui.adapter.Texts
 import com.foolchen.arch.view.recyclerview.IItemChildClickListener
 import com.foolchen.arch.view.recyclerview.IItemClickListener
 import com.foolchen.arch.view.recyclerview.MultiTypesAdapter

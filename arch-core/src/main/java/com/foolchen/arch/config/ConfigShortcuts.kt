@@ -17,5 +17,9 @@ fun sApplicationContext() = Configurator.getConfiguration<Context>(APPLICATION_C
 
 fun sDevelop() = Configurator.getConfiguration<Boolean>(DEVELOP)
 
+fun sScreenWidth() = Configurator.getConfiguration<Int>(SCREEN_WIDTH)
+
+fun sScreenHeight() = Configurator.getConfiguration<Int>(SCREEN_HEIGHT)
+
 
 

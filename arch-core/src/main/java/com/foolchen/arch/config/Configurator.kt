@@ -80,6 +80,16 @@ object Configurator {
     return this
   }
 
+  fun withScreenWidth(width: Int): Configurator {
+    withConfiguration(SCREEN_WIDTH, width)
+    return this
+  }
+
+  fun withScreenHeight(height: Int): Configurator {
+    withConfiguration(SCREEN_HEIGHT, height)
+    return this
+  }
+
   /*
    /**
    * 配置一个全局的Activity,用于被各第三方组件使用
@@ -116,3 +126,5 @@ const val WECHAT_APP_SECRET = "wechat_app_secret"
 const val DEVELOP = "develop"
 const val BASE_URL = "base_url"
 const val TIME_OUT_SECONDS = "time_out_seconds"
+const val SCREEN_WIDTH = "screen_width"
+const val SCREEN_HEIGHT = "screen_height"

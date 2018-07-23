@@ -7,6 +7,8 @@ import com.foolchen.arch.config.sDevelop
 import com.foolchen.arch.config.sInit
 import com.foolchen.arch.network.RetrofitUtil
 import com.foolchen.arch.samples.network.UnsplashAuthorizationInterceptor
+import com.foolchen.arch.utils.getScreenHeight
+import com.foolchen.arch.utils.getScreenWidth
 import okhttp3.logging.HttpLoggingInterceptor
 
 class App : Application() {
@@ -19,6 +21,8 @@ class App : Application() {
         .withBaseUrl(
             "https://api.unsplash.com/")
         .withTimeoutSeconds(10)
+        .withScreenWidth(getScreenWidth())
+        .withScreenHeight(getScreenHeight())
         .configure()
 
     var stethoInterceptor: StethoInterceptor? = null

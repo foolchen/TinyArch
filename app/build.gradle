@@ -37,4 +37,5 @@ dependencies {
 
   implementation project(':arch-annotations')
   kapt project(":arch-compiler")
+  kapt 'com.github.bumptech.glide:compiler:4.7.1'
 }

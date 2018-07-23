@@ -56,10 +56,8 @@ abstract class MultiTypesAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
   }
 
   override fun getItemViewType(position: Int): Int {
-    if (mMultiTypeConverter == null) {
-      throw NullPointerException("IMultiTypeConverter不能为空")
-    }
-    return mMultiTypeConverter!!.getItemViewType(getItem(position))
+    return if (mMultiTypeConverter == null) super.getItemViewType(
+        position) else mMultiTypeConverter!!.getItemViewType(getItem(position))
   }
 
   /**
@@ -69,7 +67,6 @@ abstract class MultiTypesAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
    *
    * 如果没有发现对应的实现,则会抛出异常.
    */
-  @CallSuper
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
     //var vh = getIMultiTypeForItemViewType(viewType)?.provideViewHolder(parent.context, viewType)
     var vh = onCreateViewHolder(parent.context, parent, viewType)
@@ -83,9 +80,10 @@ abstract class MultiTypesAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
 
   fun onCreateViewHolder(context: Context, parent: ViewGroup, viewType: Int): VH? = null
 
+  @CallSuper
   override fun onBindViewHolder(holder: VH, position: Int) {
-    val itemViewType = getItemViewType(position)
     val item = getItem(position)
+    val itemViewType = getItemViewType(position)
     getIMultiTypeForItemViewType(itemViewType)?.bindViewHolder(holder,
         item, position, itemViewType)
     (holder as? MultiTypeViewHolder)?.setAdapter(this@MultiTypesAdapter)
