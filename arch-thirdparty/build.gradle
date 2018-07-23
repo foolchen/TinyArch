@@ -28,5 +28,8 @@ dependencies {
   // 该library旨在被依赖,所以其中引用的第三方库应该开放给上层app
   api 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.4'
 
+  // 下拉刷新&上拉加载
+  api 'com.github.Aspsine:IRecyclerView:0.0.7'
+
   implementation project(":arch-core")
 }
