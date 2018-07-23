@@ -4,7 +4,13 @@ import com.foolchen.arch.samples.bean.Photo
 
 interface MultiplePresentersContract {
 
-  fun onPhotosLoaded(photos: List<Photo>)
+  fun onRefreshSuccess(photos: List<Photo>)
 
-  fun onFailure(message: String)
+  fun onRefreshError(message: String)
+
+  fun onLoadMoreSuccess(photos: List<Photo>)
+
+  fun onLoadMoreError(message: String)
+
+  fun onLoadMoreEnd(isEnd: Boolean, message: String = "没有更多了")
 }

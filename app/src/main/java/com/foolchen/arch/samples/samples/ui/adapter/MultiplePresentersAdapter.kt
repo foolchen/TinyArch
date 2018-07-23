@@ -19,6 +19,14 @@ import com.foolchen.arch.view.recyclerview.MultiTypesAdapter
 class MultiplePresentersAdapter(
     val data: List<Photo>) : MultiTypesAdapter<MultiplePresentersAdapter.ImageHolder>() {
 
+  fun append(newData: List<Photo>) {
+    if (newData.isNotEmpty()) {
+      val startPosition = this.data.size
+      (this.data as MutableList<Photo>).addAll(newData)
+      notifyItemRangeInserted(startPosition, newData.size)
+    }
+  }
+
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
     return ImageHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_presenters, parent,
@@ -48,6 +56,7 @@ class MultiplePresentersAdapter(
         .load(imageUrl)
         .centerCrop()
         .override(finalWidth, finalHeight)
+        .placeholder(R.drawable.ic_launcher_foreground)
         .into(imageView)
   }
 
@@ -60,6 +69,10 @@ class MultiplePresentersAdapter(
   class ImageHolder(itemView: View) : MultiTypeViewHolder(itemView) {
     init {
       addClick(R.id.image)
+      // 初始化时,将ImageView设置为3:2
+      val layoutParams = itemView.layoutParams
+      layoutParams.width = sScreenWidth()
+      layoutParams.height = (sScreenWidth().toFloat() / 3 * 2).toInt()
     }
   }
 }

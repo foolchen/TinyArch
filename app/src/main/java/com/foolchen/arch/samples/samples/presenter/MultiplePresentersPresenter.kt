@@ -18,20 +18,53 @@ import nucleus5.presenter.Factory
  */
 class MultiplePresentersPresenter : BasePresenter<MultiplePresentersContract>() {
   private val ID_PHOTOS = 1
+  private var isRefresh = true
+  private var mOffset: Int = 0
 
   private val mService = RetrofitUtil.getInstance().get().create(UnsplashService::class.java)
 
   override fun onCreate(savedState: Bundle?) {
     super.onCreate(savedState)
     produce(ID_PHOTOS, Factory {
-      mService.getPhotos(0)
+      val offset: Int = if (isRefresh) {
+        0
+      } else {
+        mOffset + 10
+      }
+      mService.getPhotos(offset)
+          .map {
+            Result(it, offset)
+          }
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-    }, BiConsumer { view, result -> view.onPhotosLoaded(result) },
-        BiConsumer { view, throwable -> view.onFailure(throwable.localizedMessage) })
+    }, BiConsumer { view, result ->
+      if (isRefresh) {
+        view.onRefreshSuccess(result.data)
+      } else {
+        view.onLoadMoreSuccess(result.data)
+      }
+      mOffset = result.offset
+      view.onLoadMoreEnd(result.data.size < 10)
+    },
+        BiConsumer { view, throwable ->
+          if (isRefresh) {
+            view.onRefreshError(throwable.localizedMessage)
+          } else {
+            view.onLoadMoreError(throwable.localizedMessage)
+          }
+        })
   }
 
   fun getPhotos() {
+    isRefresh = true
     start(ID_PHOTOS)
   }
+
+  fun getMorePhotos() {
+    isRefresh = false
+    start(ID_PHOTOS)
+  }
+
+  data class Result<T>(val data: T, val offset: Int)
 }
+

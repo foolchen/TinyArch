@@ -13,6 +13,7 @@ import com.foolchen.arch.samples.bean.Photo
 import com.foolchen.arch.samples.samples.contracts.MultiplePresentersContract
 import com.foolchen.arch.samples.samples.presenter.MultiplePresentersPresenter
 import com.foolchen.arch.samples.samples.ui.adapter.MultiplePresentersAdapter
+import com.foolchen.arch.samples.view.LoadMoreFooterView
 import com.foolchen.arch.utils.GONE
 import com.foolchen.arch.utils.VISIBLE
 import com.foolchen.arch.view.recyclerview.IItemChildClickListener
@@ -33,6 +34,7 @@ class MultiplePresentersSamplesFragment : ArchFragment<MultiplePresentersPresent
   private var mAdapter: MultiplePresentersAdapter? = null
   private lateinit var mRecyclerView: IRecyclerView
   private lateinit var mProgressBar: ProgressBar
+  private lateinit var mLoadMoreView: LoadMoreFooterView
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -55,20 +57,48 @@ class MultiplePresentersSamplesFragment : ArchFragment<MultiplePresentersPresent
     mRecyclerView.layoutManager = LinearLayoutManager(context)
     mRecyclerView.GONE()
 
+    mRecyclerView.setOnLoadMoreListener {
+      if (mLoadMoreView.canLoadMore()) {
+        mLoadMoreView.status = LoadMoreFooterView.Status.LOADING
+        presenter.getMorePhotos()
+      }
+    }
+    mLoadMoreView = mRecyclerView.loadMoreFooterView as LoadMoreFooterView
+
     presenter.getPhotos()
   }
 
-  override fun onPhotosLoaded(photos: List<Photo>) {
+  override fun onRefreshSuccess(photos: List<Photo>) {
     mRecyclerView.VISIBLE()
     mProgressBar.GONE()
     mAdapter = MultiplePresentersAdapter(photos)
     mAdapter!!.setOnItemChildClickListener(this)
-    mRecyclerView.adapter = mAdapter
+    mRecyclerView.iAdapter = mAdapter
   }
 
-  override fun onFailure(message: String) {
+  override fun onRefreshError(message: String) {
     Toast.makeText(context, "加载错误", Toast.LENGTH_LONG).show()
     mProgressBar.GONE()
+  }
+
+  override fun onLoadMoreSuccess(photos: List<Photo>) {
+    mAdapter?.append(photos)
+    mLoadMoreView.status = LoadMoreFooterView.Status.IDLE
+  }
+
+  override fun onLoadMoreError(message: String) {
+    mLoadMoreView.status = LoadMoreFooterView.Status.ERROR
+  }
+
+  override fun onLoadMoreEnd(isEnd: Boolean, message: String) {
+    if (!isEnd) {
+      mRecyclerView.setLoadMoreEnabled(true)
+    }
+    if (isEnd) {
+      mLoadMoreView.status = LoadMoreFooterView.Status.THE_END
+    } else {
+      mLoadMoreView.status = LoadMoreFooterView.Status.IDLE
+    }
   }
 
   override fun onClick(view: View, data: Any, position: Int) {

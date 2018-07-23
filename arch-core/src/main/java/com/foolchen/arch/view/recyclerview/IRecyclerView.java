@@ -75,12 +75,14 @@ public class IRecyclerView extends RecyclerView {
   }
 
   public void setLoadMoreEnabled(boolean enabled) {
-    this.mLoadMoreEnabled = enabled;
-    if (mLoadMoreEnabled) {
-      removeOnScrollListener(mOnLoadMoreScrollListener);
-      addOnScrollListener(mOnLoadMoreScrollListener);
-    } else {
-      removeOnScrollListener(mOnLoadMoreScrollListener);
+    if (this.mLoadMoreEnabled != enabled) {
+      this.mLoadMoreEnabled = enabled;
+      if (mLoadMoreEnabled) {
+        removeOnScrollListener(mOnLoadMoreScrollListener);
+        addOnScrollListener(mOnLoadMoreScrollListener);
+      } else {
+        removeOnScrollListener(mOnLoadMoreScrollListener);
+      }
     }
   }
 
@@ -140,7 +142,7 @@ public class IRecyclerView extends RecyclerView {
     }
   }
 
-  @Override public void setAdapter(Adapter adapter) {
+  public void setIAdapter(Adapter adapter) {
     ensureHeaderViewContainer();
     ensureFooterViewContainer();
     ensureLoadMoreFooterContainer();
@@ -148,7 +150,7 @@ public class IRecyclerView extends RecyclerView {
         mLoadMoreFooterContainer));
   }
 
-  @Override public Adapter getAdapter() {
+  public Adapter getIAdapter() {
     return ((WrapperAdapter) super.getAdapter()).getAdapter();
   }
 
