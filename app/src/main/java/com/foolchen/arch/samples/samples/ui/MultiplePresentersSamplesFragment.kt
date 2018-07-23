@@ -2,7 +2,6 @@ package com.foolchen.arch.samples.samples.ui
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.foolchen.arch.samples.samples.ui.adapter.MultiplePresentersAdapter
 import com.foolchen.arch.utils.GONE
 import com.foolchen.arch.utils.VISIBLE
 import com.foolchen.arch.view.recyclerview.IItemChildClickListener
+import com.foolchen.arch.view.recyclerview.IRecyclerView
 import kotlinx.android.synthetic.main.fragment_multiple_presenters_samples_fragment.*
 import nucleus5.factory.PresenterFactory
 
@@ -31,7 +31,7 @@ import nucleus5.factory.PresenterFactory
 class MultiplePresentersSamplesFragment : ArchFragment<MultiplePresentersPresenter>(), MultiplePresentersContract, IItemChildClickListener {
 
   private var mAdapter: MultiplePresentersAdapter? = null
-  private lateinit var mRecyclerView: RecyclerView
+  private lateinit var mRecyclerView: IRecyclerView
   private lateinit var mProgressBar: ProgressBar
 
   override fun onCreate(savedInstanceState: Bundle?) {
