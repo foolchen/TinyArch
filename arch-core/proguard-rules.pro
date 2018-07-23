@@ -24,3 +24,13 @@
 -keepclassmembers class * extends nucleus5.presenter.Presenter {
     <init>();
 }
+
+# Glide需要的反混淆配置
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# 如果target API < 27,则需要添加这一行
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder

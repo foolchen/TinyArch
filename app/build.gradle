@@ -17,7 +17,8 @@ android {
     release {
       minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro',
-          '../arch-network/proguard-rules.pro'
+          '../arch-network/proguard-rules.pro',
+          '../arch-core/proguard-rules.pro'
     }
   }
 }
