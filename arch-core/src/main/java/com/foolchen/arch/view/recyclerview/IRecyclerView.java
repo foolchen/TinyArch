@@ -46,6 +46,8 @@ public class IRecyclerView extends RecyclerView {
 
   private View mErrorView;
 
+  private OnErrorViewClickListener mErrorViewListener;
+
   private View mLoadMoreFooterView;
 
   private LayoutInflater mInflater;
@@ -139,9 +141,26 @@ public class IRecyclerView extends RecyclerView {
     }
     ensureHolderViewContainer();
     if (mErrorView != errorView) {
+      if (mErrorView != null) {
+        mErrorView.setOnClickListener(null);
+      }
       mHolderViewContainer.removeView(mErrorView);
       mErrorView = errorView;
+      if (mErrorViewListener != null) {
+        mErrorView.setOnClickListener(mErrorViewListener);
+      }
       mHolderViewContainer.addView(mErrorView);
+    }
+  }
+
+  public void setErrorViewListener(IErrorViewListener listener) {
+    if (mErrorViewListener == null) {
+      mErrorViewListener = new OnErrorViewClickListener(listener);
+    } else {
+      mErrorViewListener.setErrorViewListener(listener);
+    }
+    if (mErrorView != null) {
+      mErrorView.setOnClickListener(mErrorViewListener);
     }
   }
 

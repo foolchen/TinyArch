@@ -56,7 +56,9 @@ class MultiStateViewFragment : NoPresenterFragment() {
     mErrorView.text = "Error"
     mErrorView.gravity = Gravity.CENTER
     mRecyclerView.setErrorView(mErrorView)
-    mErrorView.setOnClickListener { println(it) }
+    mRecyclerView.setErrorViewListener {
+      mRecyclerView.setLoading()
+    }
 
     mRecyclerView.iAdapter = MultiStateSampleAdapter()
     return mRecyclerView
