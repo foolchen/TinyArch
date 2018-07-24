@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <declare-styleable name="IRecyclerView">
-    <attr format="reference" name="loadMoreFooterLayout"/>
-    <attr format="boolean" name="loadMoreEnabled"/>
+    <attr format="reference" name="load_more_layout"/>
+    <attr format="boolean" name="load_more_enable"/>
   </declare-styleable>
 </resources>

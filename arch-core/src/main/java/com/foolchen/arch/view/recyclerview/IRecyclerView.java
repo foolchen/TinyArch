@@ -69,8 +69,8 @@ public class IRecyclerView extends RecyclerView {
     boolean loadMoreEnabled;
 
     try {
-      loadMoreEnabled = a.getBoolean(R.styleable.IRecyclerView_loadMoreEnabled, false);
-      loadMoreFooterLayoutRes = a.getResourceId(R.styleable.IRecyclerView_loadMoreFooterLayout, -1);
+      loadMoreEnabled = a.getBoolean(R.styleable.IRecyclerView_load_more_enable, false);
+      loadMoreFooterLayoutRes = a.getResourceId(R.styleable.IRecyclerView_load_more_layout, -1);
     } finally {
       a.recycle();
     }
