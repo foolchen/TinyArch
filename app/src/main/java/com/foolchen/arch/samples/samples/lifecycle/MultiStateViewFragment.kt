@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
@@ -86,14 +87,15 @@ class MultiStateViewFragment : NoPresenterFragment() {
     return true
   }
 
-  private class ErrorView(context: Context) : TextView(context), IErrorView {
-  }
+  private class ErrorView(context: Context) : TextView(context), IErrorView
 
   private class LoadingView(context: Context) : ProgressBar(context), ILoadingView {
     override fun start() {
+      Log.d("LoadingView", "LoadingView:onStart()")
     }
 
     override fun stop() {
+      Log.d("LoadingView", "LoadingView:stop()")
     }
   }
 

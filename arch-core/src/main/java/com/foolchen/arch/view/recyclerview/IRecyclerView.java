@@ -64,7 +64,8 @@ public class IRecyclerView extends RecyclerView {
     super(context, attrs, defStyle);
     final TypedArray a =
         context.obtainStyledAttributes(attrs, R.styleable.IRecyclerView, defStyle, 0);
-    @LayoutRes int loadMoreFooterLayoutRes = -1;
+
+    @LayoutRes int loadMoreFooterLayoutRes;
     boolean loadMoreEnabled;
 
     try {
@@ -80,6 +81,20 @@ public class IRecyclerView extends RecyclerView {
       setLoadMoreFooterView(loadMoreFooterLayoutRes);
     }
     setStatus(STATUS_DEFAULT);
+  }
+
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if (mLoadingView != null && mStatus == STATUS_LOADING) {
+      ((ILoadingView) mLoadingView).start();
+    }
+  }
+
+  @Override protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    if (mLoadingView != null && mStatus == STATUS_LOADING) {
+      ((ILoadingView) mLoadingView).stop();
+    }
   }
 
   public void setLoadMoreEnabled(boolean enabled) {
@@ -291,10 +306,12 @@ public class IRecyclerView extends RecyclerView {
   };
 
   private void setStatus(int status) {
-    this.mStatus = status;
-    ensureStatus(this.mStatus);
-    if (DEBUG) {
-      printStatusLog();
+    if (this.mStatus != status) {
+      this.mStatus = status;
+      ensureStatus(this.mStatus);
+      if (DEBUG) {
+        printStatusLog();
+      }
     }
   }
 
@@ -304,17 +321,20 @@ public class IRecyclerView extends RecyclerView {
       switch (status) {
         case STATUS_DEFAULT:
           mLoadingView.setVisibility(View.INVISIBLE);
+          ((ILoadingView) mLoadingView).stop();
           mErrorView.setVisibility(INVISIBLE);
           ((WrapperAdapter) adapter).setHolderEnable(false);
           break;
         case STATUS_LOADING:
           mLoadingView.setVisibility(VISIBLE);
           mErrorView.setVisibility(INVISIBLE);
+          ((ILoadingView) mLoadingView).start();
           ((WrapperAdapter) adapter).setHolderEnable(true);
           break;
         case STATUS_ERROR:
           mLoadingView.setVisibility(INVISIBLE);
           mErrorView.setVisibility(VISIBLE);
+          ((ILoadingView) mLoadingView).stop();
           ((WrapperAdapter) adapter).setHolderEnable(true);
           break;
         default:
