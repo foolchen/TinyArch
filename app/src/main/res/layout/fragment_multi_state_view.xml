@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.foolchen.arch.view.recyclerview.IRecyclerView
+<com.foolchen.arch.view.layout.SwipeToRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:error_view="@layout/error_view"
-    app:load_more_enable="true"
-    app:load_more_layout="@layout/layout_irecyclerview_load_more_footer"
-    app:loading_view="@layout/loading_view"
-    />
+    >
+
+  <com.foolchen.arch.view.recyclerview.IRecyclerView
+      android:id="@+id/rv"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:error_view="@layout/error_view"
+      app:load_more_enable="true"
+      app:load_more_layout="@layout/layout_irecyclerview_load_more_footer"
+      app:loading_view="@layout/loading_view"
+      />
+
+</com.foolchen.arch.view.layout.SwipeToRefreshLayout>

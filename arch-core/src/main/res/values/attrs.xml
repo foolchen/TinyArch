@@ -6,4 +6,9 @@
     <attr format="reference" name="loading_view"/>
     <attr format="reference" name="error_view"/>
   </declare-styleable>
+
+  <declare-styleable name="SwipeToRefreshLayout">
+    <attr format="reference" name="strl_header_view"/>
+    <attr format="reference" name="strl_content_view"/>
+  </declare-styleable>
 </resources>

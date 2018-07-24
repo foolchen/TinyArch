@@ -12,9 +12,10 @@ import android.widget.Toast
 import com.foolchen.arch.app.NoPresenterFragment
 import com.foolchen.arch.samples.R
 import com.foolchen.arch.samples.view.LoadMoreFooterView
+import com.foolchen.arch.utils.dp2px
+import com.foolchen.arch.view.layout.SwipeToRefreshLayout
 import com.foolchen.arch.view.recyclerview.IRecyclerView
 import org.jetbrains.anko.matchParent
-import org.jetbrains.anko.wrapContent
 
 /**
  * 多状态布局展示
@@ -24,6 +25,7 @@ import org.jetbrains.anko.wrapContent
  */
 class MultiStateViewFragment : NoPresenterFragment() {
   private lateinit var mRecyclerView: IRecyclerView
+  private lateinit var mSwipeRefreshLayout: SwipeToRefreshLayout
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -33,8 +35,28 @@ class MultiStateViewFragment : NoPresenterFragment() {
   @SuppressLint("StaticFieldLeak")
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
-    mRecyclerView = inflater.inflate(R.layout.fragment_multi_state_view, container,
-        false) as IRecyclerView
+    mSwipeRefreshLayout = inflater.inflate(R.layout.fragment_multi_state_view, container,
+        false) as SwipeToRefreshLayout
+
+    /*mSwipeRefreshLayout.setOnRefreshListener {
+      object : AsyncTask<Unit, Unit, Unit>() {
+
+        override fun onPreExecute() {
+          mRecyclerView.setLoading()
+        }
+
+        override fun doInBackground(vararg params: Unit?) {
+          SystemClock.sleep(2000)
+        }
+
+        override fun onPostExecute(result: Unit?) {
+          (mRecyclerView.iAdapter as MultiStateSampleAdapter).set(10)
+          mRecyclerView.setNormal()
+        }
+      }.execute()
+    }*/
+
+    mRecyclerView = mSwipeRefreshLayout.findViewById(R.id.rv)
     mRecyclerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
         ViewGroup.LayoutParams.MATCH_PARENT)
     mRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -63,7 +85,7 @@ class MultiStateViewFragment : NoPresenterFragment() {
       }.execute()
     }
     mRecyclerView.iAdapter = MultiStateSampleAdapter()
-    return mRecyclerView
+    return mSwipeRefreshLayout
   }
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -96,9 +118,14 @@ class MultiStateViewFragment : NoPresenterFragment() {
       notifyItemRangeInserted(start, count)
     }
 
+    fun set(count: Int) {
+      this.count = count
+      notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       val itemView = TextView(parent.context)
-      itemView.layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
+      itemView.layoutParams = ViewGroup.LayoutParams(matchParent, 60.dp2px())
       return ViewHolder(itemView)
     }
 
