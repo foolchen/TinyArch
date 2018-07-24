@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,20 +66,30 @@ public class IRecyclerView extends RecyclerView {
     final TypedArray a =
         context.obtainStyledAttributes(attrs, R.styleable.IRecyclerView, defStyle, 0);
 
-    @LayoutRes int loadMoreFooterLayoutRes;
+    @LayoutRes int loadMoreLayoutId;
+    @LayoutRes int loadingViewLayoutId;
+    @LayoutRes int errorViewLayoutId;
     boolean loadMoreEnabled;
 
     try {
       loadMoreEnabled = a.getBoolean(R.styleable.IRecyclerView_load_more_enable, false);
-      loadMoreFooterLayoutRes = a.getResourceId(R.styleable.IRecyclerView_load_more_layout, -1);
+      loadMoreLayoutId = a.getResourceId(R.styleable.IRecyclerView_load_more_layout, -1);
+      loadingViewLayoutId = a.getResourceId(R.styleable.IRecyclerView_loading_view, -1);
+      errorViewLayoutId = a.getResourceId(R.styleable.IRecyclerView_error_view, -1);
     } finally {
       a.recycle();
     }
 
     setLoadMoreEnabled(loadMoreEnabled);
 
-    if (loadMoreFooterLayoutRes != -1) {
-      setLoadMoreFooterView(loadMoreFooterLayoutRes);
+    if (loadMoreLayoutId != -1) {
+      setLoadMoreFooterView(loadMoreLayoutId);
+    }
+    if (loadingViewLayoutId != -1) {
+      setLoadingView(loadingViewLayoutId);
+    }
+    if (errorViewLayoutId != -1) {
+      setErrorView(errorViewLayoutId);
     }
     setStatus(STATUS_DEFAULT);
   }
@@ -140,14 +151,27 @@ public class IRecyclerView extends RecyclerView {
     if (mLoadingView != loadingView) {
       mHolderViewContainer.removeView(mLoadingView);
       mLoadingView = loadingView;
-      mHolderViewContainer.addView(mLoadingView);
+
+      FrameLayout.LayoutParams layoutParams =
+          (FrameLayout.LayoutParams) mLoadingView.getLayoutParams();
+      if (layoutParams == null) {
+        layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT);
+      }
+      layoutParams.gravity = Gravity.CENTER;
+
+      mHolderViewContainer.addView(mLoadingView, layoutParams);
     }
+  }
+
+  public ILoadingView getLoadingView() {
+    return (ILoadingView) mLoadingView;
   }
 
   public void setErrorView(@LayoutRes int errorViewLayoutRes) {
     ensureInflater();
     ensureHolderViewContainer();
-    setLoadingView(mInflater.inflate(errorViewLayoutRes, mHolderViewContainer, false));
+    setErrorView(mInflater.inflate(errorViewLayoutRes, mHolderViewContainer, false));
   }
 
   public void setErrorView(View errorView) {
@@ -164,8 +188,21 @@ public class IRecyclerView extends RecyclerView {
       if (mErrorViewListener != null) {
         mErrorView.setOnClickListener(mErrorViewListener);
       }
-      mHolderViewContainer.addView(mErrorView);
+
+      FrameLayout.LayoutParams layoutParams =
+          (FrameLayout.LayoutParams) mErrorView.getLayoutParams();
+      if (layoutParams == null) {
+        layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT);
+      }
+      layoutParams.gravity = Gravity.CENTER;
+
+      mHolderViewContainer.addView(mErrorView, layoutParams);
     }
+  }
+
+  public IErrorView getErrorView() {
+    return (IErrorView) mErrorView;
   }
 
   public void setErrorViewListener(IErrorViewListener listener) {

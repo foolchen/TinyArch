@@ -1,17 +1,13 @@
 package com.foolchen.arch.samples.samples.lifecycle
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import com.foolchen.arch.app.NoPresenterFragment
-import com.foolchen.arch.utils.dp2px
+import com.foolchen.arch.samples.R
 import com.foolchen.arch.view.recyclerview.IErrorView
 import com.foolchen.arch.view.recyclerview.ILoadingView
 import com.foolchen.arch.view.recyclerview.IRecyclerView
@@ -27,8 +23,8 @@ import org.jetbrains.anko.wrapContent
 class MultiStateViewFragment : NoPresenterFragment() {
   private lateinit var mRecyclerView: IRecyclerView
 
-  private lateinit var mProgressBar: LoadingView
-  private lateinit var mErrorView: ErrorView
+  private lateinit var mLoadingView: ILoadingView
+  private lateinit var mErrorView: IErrorView
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -37,16 +33,17 @@ class MultiStateViewFragment : NoPresenterFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
-    mRecyclerView = IRecyclerView(context)
+    mRecyclerView = inflater.inflate(R.layout.fragment_multi_state_view, container,
+        false) as IRecyclerView
     mRecyclerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
         ViewGroup.LayoutParams.MATCH_PARENT)
     mRecyclerView.layoutManager = LinearLayoutManager(context)
 
-    mProgressBar = LoadingView(inflater.context)
+    /*mLoadingView = LoadingView(inflater.context)
     val layoutParams = FrameLayout.LayoutParams(50.dp2px(), 50.dp2px())
     layoutParams.gravity = Gravity.CENTER
-    mProgressBar.layoutParams = layoutParams
-    mRecyclerView.setLoadingView(mProgressBar)
+    mLoadingView.layoutParams = layoutParams
+    mRecyclerView.setLoadingView(mLoadingView)
 
     mErrorView = ErrorView(inflater.context)
     val layoutParams1 = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -59,6 +56,9 @@ class MultiStateViewFragment : NoPresenterFragment() {
     mRecyclerView.setErrorView(mErrorView)
     mRecyclerView.setErrorViewListener {
       mRecyclerView.setLoading()
+    }*/
+    mRecyclerView.setErrorViewListener {
+      Toast.makeText(context, "点击重试...", Toast.LENGTH_SHORT).show()
     }
 
     mRecyclerView.iAdapter = MultiStateSampleAdapter()
@@ -67,9 +67,9 @@ class MultiStateViewFragment : NoPresenterFragment() {
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     super.onCreateOptionsMenu(menu, inflater)
-    menu.add(1, 2, 2, "ERROR")
-    menu.add(1, 1, 1, "LOADING")
-    menu.add(1, 3, 1, "NORMAL")
+    menu.add(1, 2, 3, "ERROR").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+    menu.add(1, 1, 2, "LOADING").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+    menu.add(1, 3, 1, "NORMAL").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -87,7 +87,7 @@ class MultiStateViewFragment : NoPresenterFragment() {
     return true
   }
 
-  private class ErrorView(context: Context) : TextView(context), IErrorView
+  /*private class ErrorView(context: Context) : TextView(context), IErrorView
 
   private class LoadingView(context: Context) : ProgressBar(context), ILoadingView {
     override fun start() {
@@ -97,7 +97,7 @@ class MultiStateViewFragment : NoPresenterFragment() {
     override fun stop() {
       Log.d("LoadingView", "LoadingView:stop()")
     }
-  }
+  }*/
 
   private class MultiStateSampleAdapter : RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

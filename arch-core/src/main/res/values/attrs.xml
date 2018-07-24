@@ -3,5 +3,7 @@
   <declare-styleable name="IRecyclerView">
     <attr format="reference" name="load_more_layout"/>
     <attr format="boolean" name="load_more_enable"/>
+    <attr format="reference" name="loading_view"/>
+    <attr format="reference" name="error_view"/>
   </declare-styleable>
 </resources>
