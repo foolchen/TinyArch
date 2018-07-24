@@ -47,4 +47,14 @@
       app:layout_constraintTop_toBottomOf="@id/btn_presenters"
       />
 
+  <Button
+      android:id="@+id/btn_multi_state_samples"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="多状态RecyclerView"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/btn_multi_items_samples"
+      />
+
 </android.support.constraint.ConstraintLayout>

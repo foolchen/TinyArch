@@ -22,11 +22,9 @@ public class IRecyclerView extends RecyclerView {
 
   private static final int STATUS_DEFAULT = 0;
 
-  private static final int STATUS_SWIPING_TO_REFRESH = 1;
+  private static final int STATUS_LOADING = 1;
 
-  private static final int STATUS_RELEASE_TO_REFRESH = 2;
-
-  private static final int STATUS_REFRESHING = 3;
+  private static final int STATUS_ERROR = 2;
 
   private static final boolean DEBUG = false;
 
@@ -40,9 +38,17 @@ public class IRecyclerView extends RecyclerView {
 
   private LinearLayout mHeaderViewContainer;
 
+  private FrameLayout mHolderViewContainer;
+
   private LinearLayout mFooterViewContainer;
 
+  private View mLoadingView;
+
+  private View mErrorView;
+
   private View mLoadMoreFooterView;
+
+  private LayoutInflater mInflater;
 
   public IRecyclerView(Context context) {
     this(context, null);
@@ -90,6 +96,55 @@ public class IRecyclerView extends RecyclerView {
     this.mOnLoadMoreListener = listener;
   }
 
+  public void setLoading() {
+    setStatus(STATUS_LOADING);
+  }
+
+  public void setError() {
+    setStatus(STATUS_ERROR);
+  }
+
+  public void setNormal() {
+    setStatus(STATUS_DEFAULT);
+  }
+
+  public void setLoadingView(@LayoutRes int loadingViewLayoutRes) {
+    ensureInflater();
+    ensureHolderViewContainer();
+    setLoadingView(mInflater.inflate(loadingViewLayoutRes, mHolderViewContainer, false));
+  }
+
+  public void setLoadingView(View loadingView) {
+    if (!(loadingView instanceof ILoadingView)) {
+      throw new IllegalArgumentException("LoadingView必须实现ILoadingView接口");
+    }
+    ensureHolderViewContainer();
+
+    if (mLoadingView != loadingView) {
+      mHolderViewContainer.removeView(mLoadingView);
+      mLoadingView = loadingView;
+      mHolderViewContainer.addView(mLoadingView);
+    }
+  }
+
+  public void setErrorView(@LayoutRes int errorViewLayoutRes) {
+    ensureInflater();
+    ensureHolderViewContainer();
+    setLoadingView(mInflater.inflate(errorViewLayoutRes, mHolderViewContainer, false));
+  }
+
+  public void setErrorView(View errorView) {
+    if (!(errorView instanceof IErrorView)) {
+      throw new IllegalArgumentException("ErrorView必须实现IErrorView接口");
+    }
+    ensureHolderViewContainer();
+    if (mErrorView != errorView) {
+      mHolderViewContainer.removeView(mErrorView);
+      mErrorView = errorView;
+      mHolderViewContainer.addView(mErrorView);
+    }
+  }
+
   public void setLoadMoreFooterView(View loadMoreFooterView) {
     if (mLoadMoreFooterView != null) {
       removeLoadMoreFooterView();
@@ -119,6 +174,11 @@ public class IRecyclerView extends RecyclerView {
     return mHeaderViewContainer;
   }
 
+  public FrameLayout getHolderContainer() {
+    ensureHolderViewContainer();
+    return mHolderViewContainer;
+  }
+
   public LinearLayout getFooterContainer() {
     ensureFooterViewContainer();
     return mFooterViewContainer;
@@ -144,10 +204,11 @@ public class IRecyclerView extends RecyclerView {
 
   public void setIAdapter(Adapter adapter) {
     ensureHeaderViewContainer();
+    ensureHolderViewContainer();
     ensureFooterViewContainer();
     ensureLoadMoreFooterContainer();
-    super.setAdapter(new WrapperAdapter(adapter, mHeaderViewContainer, mFooterViewContainer,
-        mLoadMoreFooterContainer));
+    super.setAdapter(new WrapperAdapter(adapter, mHeaderViewContainer, mHolderViewContainer,
+        mFooterViewContainer, mLoadMoreFooterContainer));
   }
 
   public Adapter getIAdapter() {
@@ -171,12 +232,28 @@ public class IRecyclerView extends RecyclerView {
     }
   }
 
+  private void ensureHolderViewContainer() {
+    if (mHolderViewContainer == null) {
+      mHolderViewContainer = new FrameLayout(getContext());
+      FrameLayout.LayoutParams lp =
+          new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+              ViewGroup.LayoutParams.MATCH_PARENT);
+      mHolderViewContainer.setLayoutParams(lp);
+    }
+  }
+
   private void ensureFooterViewContainer() {
     if (mFooterViewContainer == null) {
       mFooterViewContainer = new LinearLayout(getContext());
       mFooterViewContainer.setOrientation(LinearLayout.VERTICAL);
       mFooterViewContainer.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
           ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+  }
+
+  private void ensureInflater() {
+    if (mInflater == null) {
+      mInflater = LayoutInflater.from(this.getContext());
     }
   }
 
@@ -196,8 +273,34 @@ public class IRecyclerView extends RecyclerView {
 
   private void setStatus(int status) {
     this.mStatus = status;
+    ensureStatus(this.mStatus);
     if (DEBUG) {
       printStatusLog();
+    }
+  }
+
+  private void ensureStatus(int status) {
+    Adapter adapter = getAdapter();
+    if (adapter instanceof WrapperAdapter) {
+      switch (status) {
+        case STATUS_DEFAULT:
+          mLoadingView.setVisibility(View.INVISIBLE);
+          mErrorView.setVisibility(INVISIBLE);
+          ((WrapperAdapter) adapter).setHolderEnable(false);
+          break;
+        case STATUS_LOADING:
+          mLoadingView.setVisibility(VISIBLE);
+          mErrorView.setVisibility(INVISIBLE);
+          ((WrapperAdapter) adapter).setHolderEnable(true);
+          break;
+        case STATUS_ERROR:
+          mLoadingView.setVisibility(INVISIBLE);
+          mErrorView.setVisibility(VISIBLE);
+          ((WrapperAdapter) adapter).setHolderEnable(true);
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -211,17 +314,11 @@ public class IRecyclerView extends RecyclerView {
       case STATUS_DEFAULT:
         statusLog = "status_default";
         break;
-
-      case STATUS_SWIPING_TO_REFRESH:
-        statusLog = "status_swiping_to_refresh";
+      case STATUS_LOADING:
+        statusLog = "status_loading";
         break;
-
-      case STATUS_RELEASE_TO_REFRESH:
-        statusLog = "status_release_to_refresh";
-        break;
-
-      case STATUS_REFRESHING:
-        statusLog = "status_refreshing";
+      case STATUS_ERROR:
+        statusLog = "status_error";
         break;
       default:
         statusLog = "status_illegal!";

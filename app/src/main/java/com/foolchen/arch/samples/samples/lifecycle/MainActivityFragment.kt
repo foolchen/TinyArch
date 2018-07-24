@@ -37,6 +37,10 @@ class MainActivityFragment : NoPresenterLogFragment() {
     btn_multi_items_samples.setOnClickListener {
       startFragment(MultiTypeSamplesFragment::class.java.name)
     }
+
+    btn_multi_state_samples.setOnClickListener {
+      startFragment(MultiStateViewFragment::class.java.name)
+    }
   }
 
 

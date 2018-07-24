@@ -13,15 +13,36 @@ import android.widget.LinearLayout;
  * Created by aspsine on 16/3/12.
  */
 public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-  protected static final int HEADER = Integer.MIN_VALUE + 1;
-  protected static final int FOOTER = Integer.MAX_VALUE - 1;
-  protected static final int LOAD_MORE_FOOTER = Integer.MAX_VALUE;
+  // 这是所有HeaderView的容器对应的itemViewType,容器对应的position = 0
+  private static final int HEADER = Integer.MIN_VALUE + 1;
+
+  // 占位用View对应的itemViewType,对应的position = 1
+  private static final int HOLDER = Integer.MAX_VALUE / 2;
+
+  // 这是所有的FooterView的容器对应的itemViewType,容器对应的position = getItemCount() - 2
+  private static final int FOOTER = Integer.MAX_VALUE - 1;
+
+  // 加载更多FooterView对应的itemViewType,容器对应的position = getItemCount() - 1
+  private static final int LOAD_MORE_FOOTER = Integer.MAX_VALUE;
+
+  /*
+   * 在isHolderEnable = true的情况下
+   * 有上述定义的常量可知,可用的内容部分1<position<getItemCount() - 2
+   * 在绑定ViewHolder时,position应该减2(减去Header以及Holder的位置)
+   *
+   * 在isHolderEnable = false的情况下
+   * 有上述定义的常量可知,可用的内容部分0<position<getItemCount() - 1
+   * 在绑定ViewHolder时,position应该减1(减去Header以及Holder的位置)
+   */
+  private boolean isHolderEnable = false;
 
   private final RecyclerView.Adapter mAdapter;
 
   private final FrameLayout mLoadMoreFooterContainer;
 
   private final LinearLayout mHeaderContainer;
+
+  private final FrameLayout mHolderContainer;
 
   private final LinearLayout mFooterContainer;
 
@@ -52,9 +73,11 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   };
 
   public WrapperAdapter(RecyclerView.Adapter adapter, LinearLayout headerContainer,
-      LinearLayout footerContainer, FrameLayout loadMoreFooterContainer) {
+      FrameLayout holderContainer, LinearLayout footerContainer,
+      FrameLayout loadMoreFooterContainer) {
     this.mAdapter = adapter;
     this.mHeaderContainer = headerContainer;
+    this.mHolderContainer = holderContainer;
     this.mFooterContainer = footerContainer;
     this.mLoadMoreFooterContainer = loadMoreFooterContainer;
 
@@ -63,6 +86,16 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
   public RecyclerView.Adapter getAdapter() {
     return mAdapter;
+  }
+
+  public void setHolderEnable(boolean isHolderEnable) {
+    if (this.isHolderEnable != isHolderEnable) {
+      int range = getItemCount();
+      this.isHolderEnable = isHolderEnable;
+      //notifyDataSetChanged();
+      // 使用notifyItemRangeChanged以便于启用View切换的动画
+      notifyItemRangeChanged(0, range);
+    }
   }
 
   @Override public void onAttachedToRecyclerView(@NonNull final RecyclerView recyclerView) {
@@ -99,22 +132,33 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   }
 
   private boolean isFullSpanType(int type) {
-    return type == HEADER || type == FOOTER || type == LOAD_MORE_FOOTER;
+    return type == HEADER || type == HOLDER || type == FOOTER || type == LOAD_MORE_FOOTER;
   }
 
   @Override public int getItemCount() {
-    return mAdapter.getItemCount() + 3;
+    if (isHolderEnable) {
+      // 在Holder可见时,不应该显示内容
+      // 此时应该仅显示Holder
+      return 1;
+    } else {
+      // 在Holder不可见时,应该显示内容
+      return mAdapter.getItemCount() + 3;
+    }
   }
 
   @Override public int getItemViewType(int position) {
-    if (position == 0) {
-      return HEADER;
-    } else if (0 < position && position < mAdapter.getItemCount() + 1) {
-      return mAdapter.getItemViewType(position - 1);
-    } else if (position == mAdapter.getItemCount() + 1) {
-      return FOOTER;
-    } else if (position == mAdapter.getItemCount() + 2) {
-      return LOAD_MORE_FOOTER;
+    if (isHolderEnable) {
+      return HOLDER;
+    } else {
+      if (position == 0) {
+        return HEADER;
+      } else if (getLowerPosition() <= position && position <= getHigherPosition()) {
+        return mAdapter.getItemViewType(getPosition(position));
+      } else if (position == getFooterPosition()) {
+        return FOOTER;
+      } else if (position == getLoadMoreFooterPosition()) {
+        return LOAD_MORE_FOOTER;
+      }
     }
 
     throw new IllegalArgumentException("Wrong type! Position = " + position);
@@ -124,6 +168,8 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     if (viewType == HEADER) {
       return new HeaderContainerViewHolder(mHeaderContainer);
+    } else if (viewType == HOLDER) {
+      return new HolderContainerViewHolder(mHolderContainer);
     } else if (viewType == FOOTER) {
       return new FooterContainerViewHolder(mFooterContainer);
     } else if (viewType == LOAD_MORE_FOOTER) {
@@ -134,15 +180,44 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   }
 
   @Override public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-    if (0 < position && position < mAdapter.getItemCount() + 1) {
+    if (getLowerPosition() <= position && position <= getHigherPosition()) {
       //noinspection unchecked
-      mAdapter.onBindViewHolder(holder, position - 1);
+      mAdapter.onBindViewHolder(holder, getPosition(position));
     }
+  }
+
+  // 获取有效的数据下边界(包含返回值)
+  private int getLowerPosition() {
+    return 1;
+  }
+
+  // 获取有效的数据上边界(包含返回值)
+  private int getHigherPosition() {
+    return mAdapter.getItemCount();
+  }
+
+  private int getPosition(int position) {
+    return position - 1;
+  }
+
+  private int getFooterPosition() {
+    return mAdapter.getItemCount() + 1;
+  }
+
+  private int getLoadMoreFooterPosition() {
+    return mAdapter.getItemCount() + 2;
   }
 
   static class HeaderContainerViewHolder extends RecyclerView.ViewHolder {
 
     HeaderContainerViewHolder(View itemView) {
+      super(itemView);
+    }
+  }
+
+  static class HolderContainerViewHolder extends RecyclerView.ViewHolder {
+
+    HolderContainerViewHolder(View itemView) {
       super(itemView);
     }
   }
