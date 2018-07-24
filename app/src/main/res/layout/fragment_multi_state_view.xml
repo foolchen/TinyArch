@@ -5,5 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:error_view="@layout/error_view"
+    app:load_more_enable="true"
+    app:load_more_layout="@layout/layout_irecyclerview_load_more_footer"
     app:loading_view="@layout/loading_view"
     />

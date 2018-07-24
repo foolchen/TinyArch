@@ -336,7 +336,7 @@ public class IRecyclerView extends RecyclerView {
 
   private OnLoadMoreScrollListener mOnLoadMoreScrollListener = new OnLoadMoreScrollListener() {
     @Override public void onLoadMore(RecyclerView recyclerView) {
-      if (mOnLoadMoreListener != null && mStatus == STATUS_DEFAULT) {
+      if (mOnLoadMoreListener != null && mStatus == STATUS_DEFAULT) { // 仅在显示内容的情况下,才触发上拉加载
         mOnLoadMoreListener.onLoadMore();
       }
     }

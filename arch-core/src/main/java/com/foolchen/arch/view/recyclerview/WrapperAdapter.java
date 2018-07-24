@@ -90,11 +90,18 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
   public void setHolderEnable(boolean isHolderEnable) {
     if (this.isHolderEnable != isHolderEnable) {
-      int range = getItemCount();
+      /*int range = getItemCount();
       this.isHolderEnable = isHolderEnable;
       //notifyDataSetChanged();
       // 使用notifyItemRangeChanged以便于启用View切换的动画
-      notifyItemRangeChanged(0, range);
+      //notifyItemRangeChanged(0, range);
+      if (this.isHolderEnable) {
+        notifyItemRangeRemoved(1, range - 1);
+      } else {
+        notifyItemRangeChanged(0, range);
+      }*/
+      this.isHolderEnable = isHolderEnable;
+      notifyDataSetChanged();
     }
   }
 

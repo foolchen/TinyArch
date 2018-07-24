@@ -1,6 +1,9 @@
-package com.foolchen.arch.samples.samples.lifecycle
+package com.foolchen.arch.samples.samples.ui
 
+import android.annotation.SuppressLint
+import android.os.AsyncTask
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
@@ -8,8 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.foolchen.arch.app.NoPresenterFragment
 import com.foolchen.arch.samples.R
-import com.foolchen.arch.view.recyclerview.IErrorView
-import com.foolchen.arch.view.recyclerview.ILoadingView
+import com.foolchen.arch.samples.view.LoadMoreFooterView
 import com.foolchen.arch.view.recyclerview.IRecyclerView
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.wrapContent
@@ -23,14 +25,12 @@ import org.jetbrains.anko.wrapContent
 class MultiStateViewFragment : NoPresenterFragment() {
   private lateinit var mRecyclerView: IRecyclerView
 
-  private lateinit var mLoadingView: ILoadingView
-  private lateinit var mErrorView: IErrorView
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setHasOptionsMenu(true)
   }
 
+  @SuppressLint("StaticFieldLeak")
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
     mRecyclerView = inflater.inflate(R.layout.fragment_multi_state_view, container,
@@ -39,28 +39,29 @@ class MultiStateViewFragment : NoPresenterFragment() {
         ViewGroup.LayoutParams.MATCH_PARENT)
     mRecyclerView.layoutManager = LinearLayoutManager(context)
 
-    /*mLoadingView = LoadingView(inflater.context)
-    val layoutParams = FrameLayout.LayoutParams(50.dp2px(), 50.dp2px())
-    layoutParams.gravity = Gravity.CENTER
-    mLoadingView.layoutParams = layoutParams
-    mRecyclerView.setLoadingView(mLoadingView)
-
-    mErrorView = ErrorView(inflater.context)
-    val layoutParams1 = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-        240.dp2px())
-    layoutParams1.gravity = Gravity.CENTER
-    mErrorView.layoutParams = layoutParams1
-    mErrorView.setBackgroundColor(Color.YELLOW)
-    mErrorView.text = "Error"
-    mErrorView.gravity = Gravity.CENTER
-    mRecyclerView.setErrorView(mErrorView)
-    mRecyclerView.setErrorViewListener {
-      mRecyclerView.setLoading()
-    }*/
     mRecyclerView.setErrorViewListener {
       Toast.makeText(context, "点击重试...", Toast.LENGTH_SHORT).show()
     }
 
+    val loadMoreView = mRecyclerView.loadMoreFooterView as LoadMoreFooterView
+    mRecyclerView.setOnLoadMoreListener {
+
+      object : AsyncTask<Unit, Unit, Unit>() {
+
+        override fun onPreExecute() {
+          loadMoreView.status = LoadMoreFooterView.Status.LOADING
+        }
+
+        override fun doInBackground(vararg params: Unit?) {
+          SystemClock.sleep(2000)
+        }
+
+        override fun onPostExecute(result: Unit?) {
+          (mRecyclerView.iAdapter as MultiStateSampleAdapter).append(10)
+          loadMoreView.status = LoadMoreFooterView.Status.IDLE
+        }
+      }.execute()
+    }
     mRecyclerView.iAdapter = MultiStateSampleAdapter()
     return mRecyclerView
   }
@@ -87,26 +88,21 @@ class MultiStateViewFragment : NoPresenterFragment() {
     return true
   }
 
-  /*private class ErrorView(context: Context) : TextView(context), IErrorView
+  private class MultiStateSampleAdapter(var count: Int = 20) : RecyclerView.Adapter<ViewHolder>() {
 
-  private class LoadingView(context: Context) : ProgressBar(context), ILoadingView {
-    override fun start() {
-      Log.d("LoadingView", "LoadingView:onStart()")
+    fun append(count: Int) {
+      val start = this.count
+      this.count += count
+      notifyItemRangeInserted(start, count)
     }
 
-    override fun stop() {
-      Log.d("LoadingView", "LoadingView:stop()")
-    }
-  }*/
-
-  private class MultiStateSampleAdapter : RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       val itemView = TextView(parent.context)
       itemView.layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
       return ViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int = 20
+    override fun getItemCount(): Int = count
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
       (holder.itemView as TextView).text = "Item $position"
