@@ -29,7 +29,7 @@ open class SwipeToRefreshLayout : ViewGroup {
   protected val mInflater by lazy { LayoutInflater.from(context) }
 
   private var isContentViewFound = false
-  private var isHeaderViewHeightAssigned = false
+  private var isTriggerHeightAssigned = false
   private var mHeaderViewHeight = 0
 
   private lateinit var mHeaderViewLayoutParams: ViewGroup.LayoutParams
@@ -42,6 +42,8 @@ open class SwipeToRefreshLayout : ViewGroup {
   private var mContentViewImmediatePosition = 0 // ContentView在拖动过程中,顶部的位置
   private var mHeaderViewImmediateHeight = 0 // HeaderView在拖动过程中的高度
   private var mHeaderViewImmediatePosition = 0 // HeaderView在拖动过程中,顶部的位置
+
+  private var mTriggerHeight = 0
 
   private var mHeaderMode = HEADER_MODE_TRANLSATE
 
@@ -102,8 +104,19 @@ open class SwipeToRefreshLayout : ViewGroup {
 
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-    measureChild(mHeaderView, widthMeasureSpec, heightMeasureSpec)
-    mHeaderViewHeight = mHeaderView.measuredHeight
+
+    val childCount = childCount
+    for (i in 0 until childCount) {
+      val child = getChildAt(i)
+      measureChild(child, widthMeasureSpec, heightMeasureSpec)
+      if (child == mHeaderView) {
+        mHeaderViewHeight = mHeaderView.measuredHeight
+        if (!isTriggerHeightAssigned) {
+          mTriggerHeight = mHeaderViewHeight
+          isTriggerHeightAssigned = true
+        }
+      }
+    }
   }
 
   override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -113,16 +126,23 @@ open class SwipeToRefreshLayout : ViewGroup {
       mHeaderView.layout(0, 0, r, mHeaderViewHeight)
       mContentView.layout(0, mHeaderViewHeight, r, b)
     } else {
-      mHeaderView.layout(0, mHeaderViewImmediatePosition, r,
+      /*mHeaderView.layout(0, mHeaderViewImmediatePosition, r,
           mHeaderViewImmediatePosition + mHeaderViewHeight)
       mHeaderViewLayoutParams.height = mHeaderViewImmediateHeight
       mHeaderView.layoutParams = mHeaderViewLayoutParams
-      mContentView.layout(0, mContentViewImmediatePosition, r, b)
-
-      /*val width = r - l // 自身宽度
-      val height = b - t // 自身高度
-*/
-
+      mContentView.layout(0, mContentViewImmediatePosition, r, b)*/
+      val childCount = childCount
+      for (i in 0 until childCount) {
+        val child = getChildAt(i)
+        if (child == mHeaderView) {
+          child.layout(0, mHeaderViewImmediatePosition, r,
+              mHeaderViewImmediatePosition + mHeaderViewHeight)
+          mHeaderViewLayoutParams.height = mHeaderViewImmediateHeight
+          mHeaderView.layoutParams = mHeaderViewLayoutParams
+        } else {
+          child.layout(0, mContentViewImmediatePosition, r, b)
+        }
+      }
     }
   }
 
