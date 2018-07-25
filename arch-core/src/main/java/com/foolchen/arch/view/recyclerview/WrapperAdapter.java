@@ -90,16 +90,6 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
   public void setHolderEnable(boolean isHolderEnable) {
     if (this.isHolderEnable != isHolderEnable) {
-      /*int range = getItemCount();
-      this.isHolderEnable = isHolderEnable;
-      //notifyDataSetChanged();
-      // 使用notifyItemRangeChanged以便于启用View切换的动画
-      //notifyItemRangeChanged(0, range);
-      if (this.isHolderEnable) {
-        notifyItemRangeRemoved(1, range - 1);
-      } else {
-        notifyItemRangeChanged(0, range);
-      }*/
       this.isHolderEnable = isHolderEnable;
       notifyDataSetChanged();
     }
@@ -147,9 +137,11 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
       // 在Holder可见时,不应该显示内容
       // 此时应该仅显示Holder
       return 1;
-    } else {
+    } else if (isHeaderViewEnable()) {
       // 在Holder不可见时,应该显示内容
       return mAdapter.getItemCount() + 3;
+    } else {
+      return mAdapter.getItemCount() + 2;
     }
   }
 
@@ -173,7 +165,7 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
   @NonNull @Override
   public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    if (viewType == HEADER) {
+    if (isHeaderViewEnable() && viewType == HEADER) {
       return new HeaderContainerViewHolder(mHeaderContainer);
     } else if (viewType == HOLDER) {
       return new HolderContainerViewHolder(mHolderContainer);
@@ -195,24 +187,48 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
   // 获取有效的数据下边界(包含返回值)
   private int getLowerPosition() {
-    return 1;
+    if (isHeaderViewEnable()) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
   // 获取有效的数据上边界(包含返回值)
   private int getHigherPosition() {
-    return mAdapter.getItemCount();
+    if (isHeaderViewEnable()) {
+      return mAdapter.getItemCount();
+    } else {
+      return mAdapter.getItemCount() - 1;
+    }
   }
 
   private int getPosition(int position) {
-    return position - 1;
+    if (isHeaderViewEnable()) {
+      return position - 1;
+    } else {
+      return position;
+    }
   }
 
   private int getFooterPosition() {
-    return mAdapter.getItemCount() + 1;
+    if (isHeaderViewEnable()) {
+      return mAdapter.getItemCount() + 1;
+    } else {
+      return mAdapter.getItemCount();
+    }
   }
 
   private int getLoadMoreFooterPosition() {
-    return mAdapter.getItemCount() + 2;
+    if (isHeaderViewEnable()) {
+      return mAdapter.getItemCount() + 2;
+    } else {
+      return mAdapter.getItemCount() + 1;
+    }
+  }
+
+  private boolean isHeaderViewEnable() {
+    return mHeaderContainer.getChildCount() > 0;
   }
 
   static class HeaderContainerViewHolder extends RecyclerView.ViewHolder {
