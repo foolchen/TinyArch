@@ -37,7 +37,6 @@ class MultiStateViewFragment : NoPresenterFragment() {
       savedInstanceState: Bundle?): View? {
     mSwipeRefreshLayout = inflater.inflate(R.layout.fragment_multi_state_view, container,
         false) as SwipeToRefreshLayout
-
     /*mSwipeRefreshLayout.setOnRefreshListener {
       object : AsyncTask<Unit, Unit, Unit>() {
 
@@ -57,8 +56,8 @@ class MultiStateViewFragment : NoPresenterFragment() {
     }*/
 
     mRecyclerView = mSwipeRefreshLayout.findViewById(R.id.rv)
-    mRecyclerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT)
+    /*mRecyclerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT)*/
     mRecyclerView.layoutManager = LinearLayoutManager(context)
 
     mRecyclerView.setErrorViewListener {

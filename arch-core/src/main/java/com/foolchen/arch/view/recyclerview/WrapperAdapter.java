@@ -227,6 +227,7 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
   }
 
+  // TODO: 2018/7/25 chenchong 在移除/添加HeaderView时,没有做刷新
   private boolean isHeaderViewEnable() {
     return mHeaderContainer.getChildCount() > 0;
   }

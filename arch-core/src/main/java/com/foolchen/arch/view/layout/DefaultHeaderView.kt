@@ -1,6 +1,7 @@
 package com.foolchen.arch.view.layout
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup
@@ -24,5 +25,6 @@ class DefaultHeaderView : TextView, ISwipeToRefreshHeader {
     this.layoutParams = ViewGroup.LayoutParams(matchParent, 60.dp2px())
     gravity = Gravity.CENTER
     text = "默认HeaderView"
+    setBackgroundColor(Color.RED)
   }
 }
