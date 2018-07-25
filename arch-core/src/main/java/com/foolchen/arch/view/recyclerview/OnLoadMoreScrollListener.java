@@ -8,32 +8,36 @@ import android.view.View;
  */
 public abstract class OnLoadMoreScrollListener extends RecyclerView.OnScrollListener {
 
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+  @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+  }
+
+  @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+    if (recyclerView instanceof IRecyclerView
+        && ((IRecyclerView) recyclerView).getLoadMoreFooterView() instanceof ILoadMoreFooterView
+        && !((ILoadMoreFooterView) ((IRecyclerView) recyclerView).getLoadMoreFooterView()).canLoadMore()) {
+      return;
     }
 
-    @Override
-    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        int visibleItemCount = layoutManager.getChildCount();
+    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+    int visibleItemCount = layoutManager.getChildCount();
 
+    boolean triggerCondition =
+        visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE && canTriggerLoadMore(
+            recyclerView);
 
-        boolean triggerCondition = visibleItemCount > 0
-                && newState == RecyclerView.SCROLL_STATE_IDLE
-                && canTriggerLoadMore(recyclerView);
-
-        if (triggerCondition) {
-            onLoadMore(recyclerView);
-        }
+    if (triggerCondition) {
+      onLoadMore(recyclerView);
     }
+  }
 
-    public boolean canTriggerLoadMore(RecyclerView recyclerView) {
-        View lastChild = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
-        int position = recyclerView.getChildLayoutPosition(lastChild);
-        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        int totalItemCount = layoutManager.getItemCount();
-        return totalItemCount - 1 == position;
-    }
+  public boolean canTriggerLoadMore(RecyclerView recyclerView) {
+    View lastChild = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
+    int position = recyclerView.getChildLayoutPosition(lastChild);
+    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+    int totalItemCount = layoutManager.getItemCount();
+    return totalItemCount - 1 == position;
+  }
 
-    public abstract void onLoadMore(RecyclerView recyclerView);
+  public abstract void onLoadMore(RecyclerView recyclerView);
 }

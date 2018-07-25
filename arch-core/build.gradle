@@ -48,6 +48,8 @@ dependencies {
     exclude group: "com.android.support"
   }
 
+  api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-12'
+
   testImplementation "junit:junit:$junitVersion"
   androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
   androidTestImplementation "com.android.support.test.espresso:espresso-core:$testEspressoVersion"

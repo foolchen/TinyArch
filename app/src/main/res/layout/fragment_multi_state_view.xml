@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.foolchen.arch.view.layout.SwipeToRefreshLayout
+<com.scwang.smartrefresh.layout.SmartRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe_refresh_layout"
@@ -17,4 +17,4 @@
       app:loading_view="@layout/loading_view"
       />
 
-</com.foolchen.arch.view.layout.SwipeToRefreshLayout>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.foolchen.arch.samples.R
+import com.foolchen.arch.view.recyclerview.ILoadMoreFooterView
 
 /**
  * Created by aspsine on 16/3/14.
  */
 class LoadMoreFooterView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), ILoadMoreFooterView {
 
   var status: Status? = null
     set(status) {
@@ -48,7 +49,7 @@ class LoadMoreFooterView @JvmOverloads constructor(context: Context, attrs: Attr
     this.mOnRetryListener = listener
   }
 
-  fun canLoadMore(): Boolean {
+  override fun canLoadMore(): Boolean {
     return status == Status.GONE || status == Status.ERROR || status == Status.IDLE
   }
 

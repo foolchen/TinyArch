@@ -9,9 +9,18 @@ import com.foolchen.arch.network.RetrofitUtil
 import com.foolchen.arch.samples.network.UnsplashAuthorizationInterceptor
 import com.foolchen.arch.utils.getScreenHeight
 import com.foolchen.arch.utils.getScreenWidth
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import okhttp3.logging.HttpLoggingInterceptor
 
 class App : Application() {
+
+  init {
+    SmartRefreshLayout.setDefaultRefreshInitializer { context, layout ->
+      layout.setEnableLoadMore(false)
+      layout.setEnableOverScrollDrag(false)
+    }
+  }
+
   override fun onCreate() {
     super.onCreate()
     sInit(this)

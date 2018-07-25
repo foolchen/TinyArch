@@ -13,8 +13,8 @@ import com.foolchen.arch.app.NoPresenterFragment
 import com.foolchen.arch.samples.R
 import com.foolchen.arch.samples.view.LoadMoreFooterView
 import com.foolchen.arch.utils.dp2px
-import com.foolchen.arch.view.layout.SwipeToRefreshLayout
 import com.foolchen.arch.view.recyclerview.IRecyclerView
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import org.jetbrains.anko.matchParent
 
 /**
@@ -25,7 +25,7 @@ import org.jetbrains.anko.matchParent
  */
 class MultiStateViewFragment : NoPresenterFragment() {
   private lateinit var mRecyclerView: IRecyclerView
-  private lateinit var mSwipeRefreshLayout: SwipeToRefreshLayout
+  private lateinit var mSwipeRefreshLayout: SmartRefreshLayout
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -36,7 +36,8 @@ class MultiStateViewFragment : NoPresenterFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
     mSwipeRefreshLayout = inflater.inflate(R.layout.fragment_multi_state_view, container,
-        false) as SwipeToRefreshLayout
+        false) as SmartRefreshLayout
+    mSwipeRefreshLayout.setEnableLoadMore(false)
     /*mSwipeRefreshLayout.setOnRefreshListener {
       object : AsyncTask<Unit, Unit, Unit>() {
 
@@ -56,8 +57,6 @@ class MultiStateViewFragment : NoPresenterFragment() {
     }*/
 
     mRecyclerView = mSwipeRefreshLayout.findViewById(R.id.rv)
-    /*mRecyclerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT)*/
     mRecyclerView.layoutManager = LinearLayoutManager(context)
 
     mRecyclerView.setErrorViewListener {
@@ -79,7 +78,11 @@ class MultiStateViewFragment : NoPresenterFragment() {
 
         override fun onPostExecute(result: Unit?) {
           (mRecyclerView.iAdapter as MultiStateSampleAdapter).append(10)
-          loadMoreView.status = LoadMoreFooterView.Status.IDLE
+          if (mRecyclerView.iAdapter.itemCount >= 60) {
+            loadMoreView.status = LoadMoreFooterView.Status.THE_END
+          } else {
+            loadMoreView.status = LoadMoreFooterView.Status.IDLE
+          }
         }
       }.execute()
     }

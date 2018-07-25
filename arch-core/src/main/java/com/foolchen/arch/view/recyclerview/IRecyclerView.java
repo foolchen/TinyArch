@@ -217,6 +217,10 @@ public class IRecyclerView extends RecyclerView {
   }
 
   public void setLoadMoreFooterView(View loadMoreFooterView) {
+    if (!(loadMoreFooterView instanceof ILoadMoreFooterView)) {
+      throw new IllegalArgumentException("LoadMoreFooterView必须实现ILoadMoreFooterView接口");
+    }
+
     if (mLoadMoreFooterView != null) {
       removeLoadMoreFooterView();
     }
