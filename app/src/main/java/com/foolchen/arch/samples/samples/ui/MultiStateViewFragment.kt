@@ -28,6 +28,16 @@ class MultiStateViewFragment : NoPresenterFragment() {
   private lateinit var mRecyclerView: IRecyclerView
   private lateinit var mSwipeRefreshLayout: SmartRefreshLayout
 
+  private var mHeaderViewNo = 0
+  private var mFooterViewNo = 0
+
+  private val mHeaderViews: ArrayList<View> by lazy {
+    ArrayList<View>()
+  }
+  private val mFooterViews: ArrayList<View> by lazy {
+    ArrayList<View>()
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setHasOptionsMenu(true)
@@ -39,6 +49,12 @@ class MultiStateViewFragment : NoPresenterFragment() {
     mSwipeRefreshLayout = inflater.inflate(R.layout.fragment_multi_state_view, container,
         false) as SmartRefreshLayout
     mSwipeRefreshLayout.setEnableLoadMore(false)
+
+    mRecyclerView = mSwipeRefreshLayout.findViewById(R.id.rv)
+    mRecyclerView.layoutManager = LinearLayoutManager(context)
+
+    val loadMoreView = mRecyclerView.loadMoreFooterView as LoadMoreFooterView
+
     mSwipeRefreshLayout.setOnRefreshListener {
       Log.d("MultiStateViewFragment", "触发下拉刷新")
       object : AsyncTask<Unit, Unit, Unit>() {
@@ -55,18 +71,15 @@ class MultiStateViewFragment : NoPresenterFragment() {
           (mRecyclerView.iAdapter as MultiStateSampleAdapter).set(10)
           mRecyclerView.setNormal()
           mSwipeRefreshLayout.finishRefresh()
+          loadMoreView.status = LoadMoreFooterView.Status.IDLE
         }
       }.execute()
     }
-
-    mRecyclerView = mSwipeRefreshLayout.findViewById(R.id.rv)
-    mRecyclerView.layoutManager = LinearLayoutManager(context)
 
     mRecyclerView.setErrorViewListener {
       Toast.makeText(context, "点击重试...", Toast.LENGTH_SHORT).show()
     }
 
-    val loadMoreView = mRecyclerView.loadMoreFooterView as LoadMoreFooterView
     mRecyclerView.setOnLoadMoreListener {
 
       object : AsyncTask<Unit, Unit, Unit>() {
@@ -98,6 +111,10 @@ class MultiStateViewFragment : NoPresenterFragment() {
     menu.add(1, 2, 3, "ERROR").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
     menu.add(1, 1, 2, "LOADING").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
     menu.add(1, 3, 1, "NORMAL").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+    menu.add(1, 4, 4, "ADD HEADER").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+    menu.add(1, 5, 5, "REMOVE HEADER").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+    menu.add(1, 6, 6, "ADD FOOTER").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+    menu.add(1, 7, 7, "REMOVE FOOTER").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -108,15 +125,50 @@ class MultiStateViewFragment : NoPresenterFragment() {
       2 -> {
         mRecyclerView.setError()
       }
-      else -> {
+      3 -> {
         mRecyclerView.setNormal()
+      }
+      4 -> {
+        val header = TextView(context)
+        header.layoutParams = ViewGroup.LayoutParams(matchParent, 60.dp2px())
+        header.gravity = Gravity.CENTER
+        header.text = "HeaderView ${mHeaderViewNo++}"
+        mHeaderViews.add(header)
+        mRecyclerView.addHeaderView(header)
+      }
+      5 -> {
+        val lastIndex = mHeaderViews.lastIndex
+        if (lastIndex != -1) {
+          val header = mHeaderViews.removeAt(lastIndex)
+          mHeaderViewNo--
+          mRecyclerView.removeHeaderView(header)
+        }
+      }
+      6 -> {
+        val footer = TextView(context)
+        footer.layoutParams = ViewGroup.LayoutParams(matchParent, 60.dp2px())
+        footer.gravity = Gravity.CENTER
+        footer.text = "FooterView ${mFooterViewNo++}"
+        mFooterViews.add(footer)
+        mRecyclerView.addFooterView(footer)
+      }
+      7 -> {
+        val lastIndex = mFooterViews.lastIndex
+        if (lastIndex != -1) {
+          val header = mFooterViews.removeAt(lastIndex)
+          mFooterViewNo--
+          mRecyclerView.removeFooterView(header)
+        }
+      }
+      else -> {
+
       }
     }
     return true
   }
 
-  private class MultiStateSampleAdapter(var count: Int = 20) : RecyclerView.Adapter<ViewHolder>() {
-
+  private class MultiStateSampleAdapter(
+      var count: Int = 20) : RecyclerView.Adapter<ViewHolder>() {
     fun append(count: Int) {
       val start = this.count
       this.count += count
