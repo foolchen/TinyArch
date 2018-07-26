@@ -35,16 +35,14 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
    * 在绑定ViewHolder时,position应该减1(减去Header以及Holder的位置)
    */
   private boolean isHolderEnable = false;
+  private boolean isLoadMoreEnable = false;
 
   private final RecyclerView.Adapter mAdapter;
 
-  private final FrameLayout mLoadMoreFooterContainer;
-
-  private final LinearLayout mHeaderContainer;
-
-  private final FrameLayout mHolderContainer;
-
-  private final LinearLayout mFooterContainer;
+  @NonNull private final FrameLayout mLoadMoreFooterContainer;
+  @NonNull private final LinearLayout mHeaderContainer;
+  @NonNull private final FrameLayout mHolderContainer;
+  @NonNull private final LinearLayout mFooterContainer;
 
   private RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
     @Override public void onChanged() {
@@ -72,20 +70,81 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
   };
 
-  public WrapperAdapter(RecyclerView.Adapter adapter, LinearLayout headerContainer,
-      FrameLayout holderContainer, LinearLayout footerContainer,
-      FrameLayout loadMoreFooterContainer) {
+  WrapperAdapter(RecyclerView.Adapter adapter, @NonNull LinearLayout headerContainer,
+      @NonNull FrameLayout holderContainer, @NonNull LinearLayout footerContainer,
+      @NonNull FrameLayout loadMoreFooterContainer, boolean isHolderEnable,
+      boolean isLoadMoreEnable) {
     this.mAdapter = adapter;
     this.mHeaderContainer = headerContainer;
     this.mHolderContainer = holderContainer;
     this.mFooterContainer = footerContainer;
     this.mLoadMoreFooterContainer = loadMoreFooterContainer;
+    this.isHolderEnable = isHolderEnable;
+    this.isLoadMoreEnable = isLoadMoreEnable;
 
     mAdapter.registerAdapterDataObserver(mObserver);
   }
 
   public RecyclerView.Adapter getAdapter() {
     return mAdapter;
+  }
+
+  public void addHeaderView(View headerView) {
+    if (headerView != null) {
+      boolean oldEnable = isHeaderViewContainerEnable();
+      mHeaderContainer.addView(headerView);
+      if (isHeaderViewContainerEnable() != oldEnable) { // 状态发生了变化
+        notifyItemInserted(getHeaderViewContainerPosition());
+      } /*else {
+        notifyItemChanged(getHeaderViewContainerPosition());
+      }*/
+    }
+  }
+
+  public void removeHeaderView(View headerView) {
+    if (headerView != null) {
+      boolean oldEnable = isHeaderViewContainerEnable();
+      int position = getHeaderViewContainerPosition();
+      mHeaderContainer.removeView(headerView);
+      if (isHeaderViewContainerEnable() != oldEnable) {
+        notifyItemRemoved(position);
+      } /*else {
+        notifyItemChanged(position);
+      }*/
+    }
+  }
+
+  public void addFooterView(View footerView) {
+    if (footerView != null) {
+      boolean oldEnable = isFooterViewContainerEnable();
+      mFooterContainer.addView(footerView);
+      if (isFooterViewContainerEnable() != oldEnable) { // 状态发生了变化
+        notifyItemInserted(getFooterViewContainerPosition());
+      } /*else {
+        notifyItemChanged(getFooterViewContainerPosition());
+      }*/
+    }
+  }
+
+  public void removeFooterView(View footerView) {
+    if (footerView != null) {
+      boolean oldEnable = isFooterViewContainerEnable();
+      int position = getFooterViewContainerPosition();
+      mFooterContainer.removeView(footerView);
+      if (isFooterViewContainerEnable() != oldEnable) {
+        notifyItemRemoved(position);
+      } /*else {
+        notifyItemChanged(position);
+      }*/
+    }
+  }
+
+  public void setLoadMoreEnable(boolean enable) {
+    if (this.isLoadMoreEnable != enable) {
+      int position = getLoadMoreFooterViewContainerPosition();
+      this.isLoadMoreEnable = enable;
+      notifyItemRemoved(position);
+    }
   }
 
   public void setHolderEnable(boolean isHolderEnable) {
@@ -106,7 +165,7 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
           if (isFullSpanType(wrapperAdapter.getItemViewType(position))) {
             return gridLayoutManager.getSpanCount();
           } else if (spanSizeLookup != null) {
-            return spanSizeLookup.getSpanSize(position - 2);
+            return spanSizeLookup.getSpanSize(getPosition(position));
           }
           return 1;
         }
@@ -133,39 +192,45 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   }
 
   @Override public int getItemCount() {
-    if (isHolderEnable) {
-      // 在Holder可见时,不应该显示内容
-      // 此时应该仅显示Holder
+    if (isHolderContainerEnable()) {
       return 1;
-    } else if (isHeaderViewEnable()) {
-      // 在Holder不可见时,应该显示内容
-      return mAdapter.getItemCount() + 3;
-    } else {
-      return mAdapter.getItemCount() + 2;
     }
+    int itemCount = mAdapter.getItemCount();
+    if (isHeaderViewContainerEnable()) {
+      itemCount++;
+    }
+    if (isHolderContainerEnable()) {
+      itemCount++;
+    }
+    if (isFooterViewContainerEnable()) {
+      itemCount++;
+    }
+    if (isLoadMoreFooterViewEnable()) {
+      itemCount++;
+    }
+    return itemCount;
   }
 
   @Override public int getItemViewType(int position) {
-    if (isHolderEnable) {
+    if (isHolderContainerEnable()) {
       return HOLDER;
-    } else {
-      if (position == 0) {
-        return HEADER;
-      } else if (getLowerPosition() <= position && position <= getHigherPosition()) {
-        return mAdapter.getItemViewType(getPosition(position));
-      } else if (position == getFooterPosition()) {
-        return FOOTER;
-      } else if (position == getLoadMoreFooterPosition()) {
-        return LOAD_MORE_FOOTER;
-      }
     }
-
-    throw new IllegalArgumentException("Wrong type! Position = " + position);
+    if (position == getHeaderViewContainerPosition()) {
+      return HEADER;
+    } else if (position == getHolderViewContainerPosition()) {
+      return HOLDER;
+    } else if (position == getFooterViewContainerPosition()) {
+      return FOOTER;
+    } else if (position == getLoadMoreFooterViewContainerPosition()) {
+      return LOAD_MORE_FOOTER;
+    } else {
+      return mAdapter.getItemViewType(getPosition(position));
+    }
   }
 
   @NonNull @Override
   public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    if (isHeaderViewEnable() && viewType == HEADER) {
+    if (viewType == HEADER) {
       return new HeaderContainerViewHolder(mHeaderContainer);
     } else if (viewType == HOLDER) {
       return new HolderContainerViewHolder(mHolderContainer);
@@ -179,57 +244,111 @@ public class WrapperAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   }
 
   @Override public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-    if (getLowerPosition() <= position && position <= getHigherPosition()) {
+    if (position != getHeaderViewContainerPosition()
+        && position != getHolderViewContainerPosition()
+        && position != getFooterViewContainerPosition()
+        && position != getLoadMoreFooterViewContainerPosition()) {
       //noinspection unchecked
-      mAdapter.onBindViewHolder(holder, getPosition(position));
+      mAdapter.onBindViewHolder(holder, position);
     }
   }
 
-  // 获取有效的数据下边界(包含返回值)
-  private int getLowerPosition() {
-    if (isHeaderViewEnable()) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  // 获取有效的数据上边界(包含返回值)
-  private int getHigherPosition() {
-    if (isHeaderViewEnable()) {
-      return mAdapter.getItemCount();
-    } else {
-      return mAdapter.getItemCount() - 1;
-    }
-  }
-
+  // 获取绑定数据需要的position
   private int getPosition(int position) {
-    if (isHeaderViewEnable()) {
-      return position - 1;
-    } else {
-      return position;
+    int resultPosition = position;
+    if (isHeaderViewContainerEnable()) {
+      resultPosition--;
     }
+    if (isHolderContainerEnable()) {
+      resultPosition--;
+    }
+    return resultPosition;
   }
 
-  private int getFooterPosition() {
-    if (isHeaderViewEnable()) {
-      return mAdapter.getItemCount() + 1;
-    } else {
-      return mAdapter.getItemCount();
-    }
+  private boolean isHeaderViewContainerEnable() {
+    return !isHolderContainerEnable() && mHeaderContainer.getChildCount() > 0;
   }
 
-  private int getLoadMoreFooterPosition() {
-    if (isHeaderViewEnable()) {
-      return mAdapter.getItemCount() + 2;
-    } else {
-      return mAdapter.getItemCount() + 1;
-    }
+  private boolean isHolderContainerEnable() {
+    return isHolderEnable;
   }
 
-  // TODO: 2018/7/25 chenchong 在移除/添加HeaderView时,没有做刷新
-  private boolean isHeaderViewEnable() {
-    return mHeaderContainer.getChildCount() > 0;
+  private boolean isFooterViewContainerEnable() {
+    return !isHolderContainerEnable() && mFooterContainer.getChildCount() > 0;
+  }
+
+  private boolean isLoadMoreFooterViewEnable() {
+    if (isHolderContainerEnable()) return false;
+
+    if (isLoadMoreEnable) {
+      int childCount = mLoadMoreFooterContainer.getChildCount();
+      int visibleChildCount = 0;
+      for (int i = 0; i < childCount; i++) {
+        View child = mLoadMoreFooterContainer.getChildAt(i);
+        if (child != null && child.getVisibility() == View.VISIBLE) {
+          visibleChildCount++;
+        }
+      }
+      return visibleChildCount > 0;
+    }
+    return false;
+  }
+
+  /**
+   * 获取HeaderViewContainer的位置
+   *
+   * @return 如果禁用了HeaderViewContainer, 则返回-1
+   */
+  private int getHeaderViewContainerPosition() {
+    int position;
+    if (isHeaderViewContainerEnable()) {
+      position = 0;
+    } else {
+      position = -1;
+    }
+    return position;
+  }
+
+  /**
+   * 获取HolderViewContainer的位置
+   *
+   * @return 如果禁用了HolderViewContainer, 则返回-1.<br/>在启用了HolderViewContainer的情况下,如果禁用了HeaderViewContainer,则返回1,否则0.
+   */
+  private int getHolderViewContainerPosition() {
+    int position = -1;
+    if (isHolderContainerEnable()) {
+      if (isHeaderViewContainerEnable()) {
+        position = 1;
+      } else {
+        position = 0;
+      }
+    }
+    return position;
+  }
+
+  /**
+   * 获取FooterViewContainer的位置
+   */
+  private int getFooterViewContainerPosition() {
+    int position = -1;
+    if (isFooterViewContainerEnable()) {
+      position = getItemCount() - 1;
+      if (isLoadMoreFooterViewEnable()) {
+        position--;
+      }
+    }
+    return position;
+  }
+
+  /**
+   * 获取加载更多FooterView的位置
+   */
+  private int getLoadMoreFooterViewContainerPosition() {
+    int position = -1;
+    if (isLoadMoreFooterViewEnable()) {
+      position = getItemCount() - 1;
+    }
+    return position;
   }
 
   static class HeaderContainerViewHolder extends RecyclerView.ViewHolder {

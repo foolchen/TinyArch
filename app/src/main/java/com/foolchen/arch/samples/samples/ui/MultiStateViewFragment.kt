@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -38,7 +39,8 @@ class MultiStateViewFragment : NoPresenterFragment() {
     mSwipeRefreshLayout = inflater.inflate(R.layout.fragment_multi_state_view, container,
         false) as SmartRefreshLayout
     mSwipeRefreshLayout.setEnableLoadMore(false)
-    /*mSwipeRefreshLayout.setOnRefreshListener {
+    mSwipeRefreshLayout.setOnRefreshListener {
+      Log.d("MultiStateViewFragment", "触发下拉刷新")
       object : AsyncTask<Unit, Unit, Unit>() {
 
         override fun onPreExecute() {
@@ -52,9 +54,10 @@ class MultiStateViewFragment : NoPresenterFragment() {
         override fun onPostExecute(result: Unit?) {
           (mRecyclerView.iAdapter as MultiStateSampleAdapter).set(10)
           mRecyclerView.setNormal()
+          mSwipeRefreshLayout.finishRefresh()
         }
       }.execute()
-    }*/
+    }
 
     mRecyclerView = mSwipeRefreshLayout.findViewById(R.id.rv)
     mRecyclerView.layoutManager = LinearLayoutManager(context)

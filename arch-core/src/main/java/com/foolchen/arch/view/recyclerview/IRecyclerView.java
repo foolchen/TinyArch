@@ -118,6 +118,10 @@ public class IRecyclerView extends RecyclerView {
         removeOnScrollListener(mOnLoadMoreScrollListener);
       }
     }
+    Adapter adapter = getAdapter();
+    if (adapter instanceof WrapperAdapter) {
+      ((WrapperAdapter) adapter).setLoadMoreEnable(mLoadMoreEnabled);
+    }
   }
 
   public void setOnLoadMoreListener(OnLoadMoreListener listener) {
@@ -244,36 +248,37 @@ public class IRecyclerView extends RecyclerView {
     return mLoadMoreFooterView;
   }
 
-  public LinearLayout getHeaderContainer() {
-    ensureHeaderViewContainer();
-    return mHeaderViewContainer;
-  }
-
-  public FrameLayout getHolderContainer() {
-    ensureHolderViewContainer();
-    return mHolderViewContainer;
-  }
-
-  public LinearLayout getFooterContainer() {
-    ensureFooterViewContainer();
-    return mFooterViewContainer;
-  }
-
   public void addHeaderView(View headerView) {
     ensureHeaderViewContainer();
-    mHeaderViewContainer.addView(headerView);
     Adapter adapter = getAdapter();
-    if (adapter != null) {
-      adapter.notifyItemChanged(1);
+    if (adapter instanceof WrapperAdapter) {
+      ((WrapperAdapter) adapter).addHeaderView(headerView);
+    }
+  }
+
+  public void removeHeaderView(View headerView) {
+    if (mHeaderViewContainer != null) {
+      Adapter adapter = getAdapter();
+      if (adapter instanceof WrapperAdapter) {
+        ((WrapperAdapter) adapter).removeHeaderView(headerView);
+      }
     }
   }
 
   public void addFooterView(View footerView) {
     ensureFooterViewContainer();
-    mFooterViewContainer.addView(footerView);
     Adapter adapter = getAdapter();
-    if (adapter != null) {
-      adapter.notifyItemChanged(adapter.getItemCount() - 2);
+    if (adapter instanceof WrapperAdapter) {
+      ((WrapperAdapter) adapter).addFooterView(footerView);
+    }
+  }
+
+  public void removeFooterView(View footerView) {
+    if (mFooterViewContainer != null) {
+      Adapter adapter = getAdapter();
+      if (adapter instanceof WrapperAdapter) {
+        ((WrapperAdapter) adapter).removeFooterView(footerView);
+      }
     }
   }
 
@@ -283,7 +288,8 @@ public class IRecyclerView extends RecyclerView {
     ensureFooterViewContainer();
     ensureLoadMoreFooterContainer();
     super.setAdapter(new WrapperAdapter(adapter, mHeaderViewContainer, mHolderViewContainer,
-        mFooterViewContainer, mLoadMoreFooterContainer));
+        mFooterViewContainer, mLoadMoreFooterContainer, mStatus != STATUS_DEFAULT,
+        mLoadMoreEnabled));
   }
 
   public Adapter getIAdapter() {
