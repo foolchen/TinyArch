@@ -29,8 +29,6 @@ dependencies {
   androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
   androidTestImplementation "com.android.support.test.espresso:espresso-core:$testEspressoVersion"
 
-  implementation "org.jetbrains.anko:anko:$anko_version"
-
   implementation project(':arch-core')
   implementation project(':arch-thirdparty')
   implementation project(':arch-network')
