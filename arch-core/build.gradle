@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: '../kotlin.gradle'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.foolchen.arch'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
