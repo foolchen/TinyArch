@@ -20,6 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# retrofit2的反混淆配置 begin
 # Retain generic type information for use by reflection by converters and adapters.
 -keepattributes Signature
 
@@ -30,7 +31,9 @@
 
 # Ignore annotation used for build tooling.
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+# retrofit2的反混淆配置 begin
 
+# okhttp3的反混淆设置 begin
 # Ignore JSR 305 annotations for embedding nullability information.
 -dontwarn javax.annotation.**
 
@@ -41,3 +44,4 @@
 -dontwarn org.conscrypt.**
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+# okhttp3的反混淆设置 end

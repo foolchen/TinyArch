@@ -35,3 +35,7 @@ dependencies {
   }
 }
 ```
+## 反混淆
+具体反混淆规则请查看[proguard-rules.pro](proguard-rules.pro)。
+
+参考来源于：[okhttp3](https://github.com/square/okhttp/blob/master/okhttp/src/main/resources/META-INF/proguard/okhttp3.pro)、[okio](https://github.com/square/okio)、[retrofit2](https://github.com/square/retrofit/blob/master/retrofit/src/main/resources/META-INF/proguard/retrofit2.pro)
