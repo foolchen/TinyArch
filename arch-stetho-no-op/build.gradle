@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+
+android {
+  compileSdkVersion 28
+
+
+
+  defaultConfig {
+    minSdkVersion 16
+    targetSdkVersion 28
+  }
+}
+
+
+dependencies {
+  implementation "com.squareup.okhttp3:okhttp:3.11.0"
+}
