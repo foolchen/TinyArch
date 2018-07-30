@@ -56,6 +56,8 @@ dependencies {
   api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-12'
   // 侧滑返回组件
   api 'cn.bingoogolapple:bga-swipebacklayout:1.1.9@aar'
+  // 状态栏控制,与侧滑返回组件结合使用
+  //api 'com.jaeger.statusbarutil:library:1.5.1'
 
   testImplementation "junit:junit:$junitVersion"
   androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"

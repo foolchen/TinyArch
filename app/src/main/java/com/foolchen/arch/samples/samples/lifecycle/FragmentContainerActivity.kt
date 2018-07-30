@@ -3,7 +3,7 @@ package com.foolchen.arch.samples.samples.lifecycle
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import com.foolchen.arch.app.SwipeBackNoPresenterActivity
 import com.foolchen.arch.samples.R
 import org.jetbrains.anko.bundleOf
 
@@ -12,7 +12,7 @@ import org.jetbrains.anko.bundleOf
  * 2018/6/4
  * 下午5:25
  */
-class FragmentContainerActivity : AppCompatActivity() {
+class FragmentContainerActivity : SwipeBackNoPresenterActivity() {
   private val FRGAMENT_TAG = "fragment_tag"
 
   override fun onCreate(savedInstanceState: Bundle?) {

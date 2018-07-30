@@ -2,13 +2,13 @@ package com.foolchen.arch.samples.samples.lifecycle
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.foolchen.arch.app.SwipeBackNoPresenterActivity
 import com.foolchen.arch.samples.R
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : SwipeBackNoPresenterActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

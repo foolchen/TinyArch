@@ -1,6 +1,7 @@
 package com.foolchen.arch.samples
 
 import android.app.Application
+import cn.bingoogolapple.swipebacklayout.BGASwipeBackHelper
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.foolchen.arch.config.sDevelop
@@ -55,5 +56,8 @@ class App : Application() {
 
     // 初始化retrofit
     RetrofitUtil.getInstance().init(networkInterceptors = networkInterceptors)
+
+    // 初始化侧滑返回
+    BGASwipeBackHelper.init(this, null)
   }
 }
