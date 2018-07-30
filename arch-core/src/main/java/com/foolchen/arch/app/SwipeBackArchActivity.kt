@@ -1,7 +1,6 @@
 package com.foolchen.arch.app
 
 import android.os.Bundle
-import android.util.Log
 import cn.bingoogolapple.swipebacklayout.BGASwipeBackHelper
 import com.foolchen.arch.R
 import nucleus5.presenter.Presenter
@@ -54,8 +53,7 @@ abstract class SwipeBackArchActivity<P : Presenter<*>> : ArchActivity<P>(), BGAS
    *
    * @return
    */
-  override
-  fun isSupportSwipeBack(): Boolean {
+  override fun isSupportSwipeBack(): Boolean {
     return true
   }
 
@@ -86,37 +84,5 @@ abstract class SwipeBackArchActivity<P : Presenter<*>> : ArchActivity<P>(), BGAS
       return
     }
     mSwipeBackHelper.backward()
-  }
-
-  /* */
-  /**
-   * 设置状态栏颜色
-   *
-   * @param color
-   *//*
-  protected fun setStatusBarColor(@ColorInt color: Int) {
-    setStatusBarColor(color, StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA)
-  }
-
-  */
-  /**
-   * 设置状态栏颜色
-   *
-   * @param color
-   * @param statusBarAlpha 透明度
-   *//*
-  fun setStatusBarColor(@ColorInt color: Int, @IntRange(from = 0, to = 255) statusBarAlpha: Int) {
-    StatusBarUtil.setColor(this, color, statusBarAlpha)
-  }*/
-
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Log.i(this.javaClass.simpleName, "onDestroy")
-  }
-
-  override fun onStop() {
-    super.onStop()
-    Log.i(this.javaClass.simpleName, "onStop")
   }
 }
