@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply from: '../kotlin.gradle'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.foolchen.arch'
+group = 'com.github.foolchen.arch'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -33,6 +33,7 @@ dependencies {
   api("io.reactivex.rxjava2:rxandroid:2.0.2") {
     exclude module: 'rxjava'
   }
+  // nucleus为MVP架构组件
   api('info.android15.nucleus5:nucleus:7.0.0') {
     exclude group: "com.android.support"
     exclude group: "io.reactivex.rxjava2"
@@ -51,7 +52,10 @@ dependencies {
     exclude group: "com.android.support"
   }
 
+  // 下拉刷新控件
   api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-12'
+  // 侧滑返回组件
+  api 'cn.bingoogolapple:bga-swipebacklayout:1.1.9@aar'
 
   testImplementation "junit:junit:$junitVersion"
   androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
