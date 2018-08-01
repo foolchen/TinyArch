@@ -1,7 +1,7 @@
 ext {
   // 开发中标识
   // 如果为false,则标识为release模式,需要将debug模块/功能关闭
-  develop = false
+  develop = true
 
   // sdk相关配置
   compileSdkVersion = 27

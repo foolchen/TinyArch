@@ -53,10 +53,22 @@ class RetrofitUtil private constructor() {
 
   /**
    * 对retrofit进行初始化
+   * @param interceptors 本地拦截器
+   * 1.不用关心redirects和reties的Response中间的过程
+   * 2.永远只会调用一次，不管Http Response是否是从缓存中直接取到的
+   * 3.可以监控原始的请求，不关心其它诸如If-None-Match的Header
+   * 4.允许不调用Chain.proceed()
+   * 5.允许重试多次调用Chain.proceed()。
+   *
+   * @param networkInterceptors 网络拦截器
+   * 1.可以操作redirects和reties的过程
+   * 2.不会调用缓存的Response
+   * 3.可以监控网络传输交互的数据
+   * 4.可以获取Connection携带的请求信息
    */
   @Synchronized
-  fun init(networkInterceptors: List<Interceptor?>? = null,
-      localInterceptors: List<Interceptor?>? = null) {
+  fun init(interceptors: List<Interceptor?>? = null,
+      networkInterceptors: List<Interceptor?>? = null) {
     val builder = OkHttpClient.Builder()
     // 设置超时时间
     builder
@@ -74,7 +86,7 @@ class RetrofitUtil private constructor() {
         builder.addNetworkInterceptor(it)
     }
 
-    localInterceptors?.forEach {
+    interceptors?.forEach {
       if (it != null)
         builder.addInterceptor(it)
     }

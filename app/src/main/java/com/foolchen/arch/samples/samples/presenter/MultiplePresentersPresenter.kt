@@ -20,6 +20,7 @@ class MultiplePresentersPresenter : BasePresenter<MultiplePresentersContract>() 
   private val ID_PHOTOS = 1
   private var isRefresh = true
   private var mOffset: Int = 0
+  var isForceCache = false
 
   private val mService = RetrofitUtil.getInstance().get().create(UnsplashService::class.java)
 
@@ -31,7 +32,7 @@ class MultiplePresentersPresenter : BasePresenter<MultiplePresentersContract>() 
       } else {
         mOffset + 10
       }
-      mService.getPhotos(offset)
+      mService.getPhotos(offset, cache = isForceCache)
           .map {
             Result(it, offset)
           }

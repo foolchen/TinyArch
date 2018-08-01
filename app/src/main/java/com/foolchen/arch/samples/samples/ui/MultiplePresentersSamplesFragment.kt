@@ -2,9 +2,7 @@ package com.foolchen.arch.samples.samples.ui
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.foolchen.arch.app.ArchFragment
@@ -38,7 +36,7 @@ class MultiplePresentersSamplesFragment : ArchFragment<MultiplePresentersPresent
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
+    setHasOptionsMenu(true)
     // 为了防止使用反射来创建presenter,此处手动设置一个工厂
     presenterFactory = PresenterFactory { MultiplePresentersPresenter() }
   }
@@ -66,6 +64,25 @@ class MultiplePresentersSamplesFragment : ArchFragment<MultiplePresentersPresent
     mLoadMoreView = mRecyclerView.loadMoreFooterView as LoadMoreFooterView
 
     presenter.getPhotos()
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    menu.add(1, 1, 1, "网络")
+    menu.add(1, 2, 2, "缓存")
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    when (item.itemId) {
+      1 -> {
+        presenter.isForceCache = false
+        presenter.getPhotos()
+      }
+      else -> {
+        presenter.isForceCache = true
+        presenter.getPhotos()
+      }
+    }
+    return true
   }
 
   override fun onRefreshSuccess(photos: List<Photo>) {
