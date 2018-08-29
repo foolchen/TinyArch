@@ -6,6 +6,7 @@ import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.foolchen.arch.config.sInit
 import com.foolchen.arch.network.CacheInterceptor
+import com.foolchen.arch.network.CacheStoreInterceptor
 import com.foolchen.arch.network.RetrofitUtil
 import com.foolchen.arch.samples.network.UnsplashAuthorizationInterceptor
 import com.foolchen.arch.utils.getScreenHeight
@@ -41,7 +42,8 @@ class App : Application() {
     RetrofitUtil.getInstance().init(
         interceptors = listOf(UnsplashAuthorizationInterceptor(), CacheInterceptor()),
         networkInterceptors = listOf(StethoInterceptor(),
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)))
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY),
+            CacheStoreInterceptor()))
 
     // 初始化侧滑返回
     BGASwipeBackHelper.init(this, null)
