@@ -11,12 +11,12 @@ import okhttp3.Response
  * 2018/8/1
  * 下午2:15
  */
-class CacheInterceptor : Interceptor {
+class CacheStrategyInterceptor : Interceptor {
 
   override fun intercept(chain: Interceptor.Chain): Response {
 
     val request = chain.request()
-    val forceCache = request.header("cache") == "true"
+    val forceCache = request.header(KEY_CACHE) == "true"
     val newBuilder = request.newBuilder()
     if (forceCache) {
       // 强制读取缓存

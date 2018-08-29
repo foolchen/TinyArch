@@ -16,7 +16,7 @@ class CacheStoreInterceptor : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
 
     val request = chain.request()
-    val forceCache = request.header("cache") == "true"
+    val forceCache = request.header(KEY_CACHE) == "true"
     val newBuilder = request.newBuilder()
     if (forceCache) {
       // 强制读取缓存
@@ -24,7 +24,7 @@ class CacheStoreInterceptor : Interceptor {
     } else {
       newBuilder.cacheControl(CacheControl.FORCE_NETWORK)
     }
-    newBuilder.removeHeader("cache") // 将多余的Header移除
+    newBuilder.removeHeader(KEY_CACHE) // 将多余的Header移除
     val newRequest = newBuilder.build()
     var response = chain.proceed(newRequest)
 

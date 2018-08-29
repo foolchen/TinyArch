@@ -1,6 +1,8 @@
 package com.foolchen.arch.samples.samples.presenter
 
 import android.os.Bundle
+import android.widget.Toast
+import com.foolchen.arch.config.sApplicationContext
 import com.foolchen.arch.network.RetrofitUtil
 import com.foolchen.arch.presenter.BasePresenter
 import com.foolchen.arch.samples.network.UnsplashService
@@ -32,7 +34,8 @@ class MultiplePresentersPresenter : BasePresenter<MultiplePresentersContract>() 
       } else {
         mOffset + 10
       }
-      mService.getPhotos(offset, cache = isForceCache)
+      //mService.getPhotos(offset, cache = isForceCache)
+      (if (isForceCache) mService.getPhotosCache(offset) else mService.getPhotos(offset))
           .map {
             Result(it, offset)
           }
@@ -40,6 +43,8 @@ class MultiplePresentersPresenter : BasePresenter<MultiplePresentersContract>() 
           .observeOn(AndroidSchedulers.mainThread())
     }, BiConsumer { view, result ->
       if (isRefresh) {
+        Toast.makeText(sApplicationContext(), if (isForceCache) "缓存加载成功" else "接口加载成功",
+            Toast.LENGTH_SHORT).show()
         view.onRefreshSuccess(result.data)
       } else {
         view.onLoadMoreSuccess(result.data)
